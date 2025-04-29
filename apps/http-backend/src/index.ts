@@ -198,6 +198,30 @@ app.get("/chats/:roomId", async (req, res) => {
         chats: first50Chats
     })
 })
+
+app.get("/room/:slug", async (req, res) => {
+    const slug = req.params.slug.toString();
+
+    // check if the room exists
+    const isExistingRoom = await prismaClient.room.findFirst({
+        where: {
+            slug
+        }
+    })
+
+    if (!isExistingRoom) {
+        res.json({
+            success: false,
+            message: "Room does not exist"
+        })
+    }
+    
+    res.json({
+        success: true,
+        message: "Room info retreived successfully",
+        room: isExistingRoom
+    })
+})
 app.listen(port, () => {
     console.log("App is running at: ", port);
 })
