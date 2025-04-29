@@ -1,7 +1,16 @@
-import { WebSocketServer } from "ws";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { JWT_SECRET } from "@repo/backend-common/config";
+import { WebSocketServer, WebSocket } from "ws";
+import { checkUser } from "./lib/checkToken";
+import { prismaClient } from "@repo/db/client";
+
 const wss = new WebSocketServer({ port: 3002 });
+interface InterfaceUser {
+    ws: WebSocket,
+    rooms: string[],
+    userId: string
+}
+
+// state management
+const users: InterfaceUser[] = [];
 
 wss.on('connection', (ws, request) => {
     const url = request.url;
@@ -11,19 +20,62 @@ wss.on('connection', (ws, request) => {
     }
 
     const queryParams = new URLSearchParams(url.split('?')[1]);
-    const token = queryParams.get('token') ??  "";
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const token = queryParams.get('token') ?? "";
+    const isUserAuthenticated = checkUser(token);
 
-    if ( typeof decoded === "string"){
+    if (!isUserAuthenticated) {
+        ws.close();
         return;
     }
 
-    if(!decoded || !decoded.userId){ // !(decoded as JwtPayload)
-        ws.close(); // close the connection
-        return;
-    }
+    const userId = isUserAuthenticated.userId;
+    users.push({
+        userId: userId,
+        rooms: [],
+        ws
+    })
 
-    ws.on('message', (data) => {
-        ws.send("ping")
+    ws.on('message', async (data) => {
+        const parsedData = JSON.parse(data.toString());
+
+        // join a room
+        if (parsedData.type === "join_room") {
+            const user = users.find(x => x.ws === ws);
+            user?.rooms.push(parsedData.roomId)
+        }
+
+        // close a chat room
+        if (parsedData.type === "leave_room") {
+            const user = users.find(x => x.ws === ws);
+            if (!user) return;
+            user.rooms = user?.rooms.filter(x => x === parsedData.room);
+        }
+
+        if (parsedData.type === "chat") {
+            const roomId = parsedData.roomId;
+            const message = parsedData.message;
+            // check if the message is too long or not and other sorts of improvements
+
+            // add in queue first and then store to db asyncronously
+
+            // add the data to database using a pipeline
+            await prismaClient.chat.create({
+                data: {
+                    message,
+                    roomId,
+                    userId
+                }
+            })
+
+            users.forEach(user => {
+                if (user.rooms.includes(roomId)) {
+                    user.ws.send(JSON.stringify({
+                        type: "chat",
+                        message,
+                        roomId
+                    }))
+                }
+            })
+        }
     })
 })

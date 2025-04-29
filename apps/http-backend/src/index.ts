@@ -118,7 +118,11 @@ app.post("/create-room", middleware, async (req: Request, res: Response) => {
         return;
     }
 
-    const { adminId, name } = req.body;
+    const { name } = req.body;
+
+    // coming from middleware
+    // @ts-ignore
+    const adminId = req.userId;
 
     // check if user exists
     const isExistingUser = await prismaClient.user.findFirst({
@@ -161,11 +165,12 @@ app.post("/create-room", middleware, async (req: Request, res: Response) => {
 })
 
 app.get("/chats/:roomId", async (req, res) => {
-    const roomId = req.query["roomId"] || 0;
+    const roomId = Number(req.params.roomId);
 
+    // check if the room exists
     const isExistingRoom = await prismaClient.room.findFirst({
         where: {
-            id: Number(roomId)
+            id: roomId
         }
     })
 
@@ -176,9 +181,13 @@ app.get("/chats/:roomId", async (req, res) => {
         })
     }
 
+    // retrieve first 50 messages
     const first50Chats = await prismaClient.chat.findMany({
         where: {
-            roomId: isExistingRoom?.id
+            roomId
+        },
+        orderBy: {
+            id: "desc"
         },
         take: 50
     })
