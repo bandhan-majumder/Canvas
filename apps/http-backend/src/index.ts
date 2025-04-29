@@ -11,11 +11,11 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.get("/", (req, res) => {
+app.get("/health", (req, res) => {
     res.send("All good");
 })
 
-app.post("/signup", (req: Request, res: Response) => {
+app.post("/signup", async (req: Request, res: Response) => {
 
     const data = CreateUserSchema.safeParse(req.body);
 
@@ -27,19 +27,39 @@ app.post("/signup", (req: Request, res: Response) => {
         return;
     }
 
-    const { username, password } = req.body();
+    const { email, password } = req.body();
+    
+    const isExistingUser = await prismaClient.user.findFirst({
+        where: {
+            email
+        }
+    });
 
-    // TODO: do zod validation
+    // if user already exists
+    if(isExistingUser){
+        res.json({
+            success: false,
+            message: "User already exists!"
+        })
+    return;
+    }
 
-    // sign it up
+    // save the entry
+    const newUser = await prismaClient.user.create({
+        data: {
+            email,
+            password,
+        }
+    })
 
     res.json({
         success: true,
-        message: "Signed up successfully"
+        message: "Signed up successfully",
+        id: newUser.id
     })
 })
 
-app.post("/signin", (req: Request, res: Response) => {
+app.post("/signin", async (req: Request, res: Response) => {
 
     const data = SiginSchema.safeParse(req.body());
 
@@ -51,13 +71,33 @@ app.post("/signin", (req: Request, res: Response) => {
         return;
     }
 
-    const { username, password } = req.body();
+    const { email, password } = req.body();
 
-    // sign in
+    const isExistingUser = await prismaClient.user.findFirst({
+        where: {
+            email
+        }
+    })
 
-    const userId = 1;
+    if(!isExistingUser){
+        res.json({
+            success: false,
+            message: "User does not exists!"
+        })
+        return;
+    }
 
-    const token = jwt.sign({ userId }, JWT_SECRET);
+    // TODO: hash it back
+
+    if(isExistingUser.password !== password) {
+        res.json({
+            success: false,
+            password: "Invalid input fields"
+        })
+        return;
+    }
+
+    const token = jwt.sign({ userId: isExistingUser.id }, JWT_SECRET);
 
     res.json({
         success: true,
@@ -66,7 +106,7 @@ app.post("/signin", (req: Request, res: Response) => {
     })
 })
 
-app.post("/create-room", middleware, (req: Request, res: Response) => {
+app.post("/create-room", middleware, async (req: Request, res: Response) => {
     const data = CreateRoomSchema.safeParse(req.body());
 
     if (!data.success) {
@@ -77,12 +117,69 @@ app.post("/create-room", middleware, (req: Request, res: Response) => {
         return;
     }
 
+    const { adminId } = req.body();
+
+    // check if user exists
+    const isExistingUser = await prismaClient.user.findFirst({
+        where: {
+            id: adminId
+        }
+    })
+
+    if(!isExistingUser){
+        res.json({
+            success: false,
+            message: "Invalid user"
+        })
+    }
+
+    // create a random hash slug
+    const slug = "";
+
+    // create a new room
+    const newRoom = await prismaClient.room.create({
+        data: {
+            slug,
+            adminId
+        }
+    });
+
     res.json({
         success: false,
-        message: "Room created successfully"
+        message: "Room created successfully",
+        roomId: newRoom.id
     })
 })
 
+app.get("/chats/:roomId", async (req, res) => {
+    const roomId = req.query["roomId"] || 0;
+
+    const isExistingRoom = await prismaClient.room.findFirst({
+        where:{
+            id: Number(roomId)
+        }
+    })
+
+    if (!isExistingRoom){
+        res.json({
+            success: false,
+            message: "Room does not exist"
+        })
+    }
+
+    const first50Chats = await prismaClient.chat.findMany({
+        where: {
+            roomId: isExistingRoom?.id
+        },
+        take: 50
+    })
+
+    res.json({
+        success: true,
+        message: "Chats retreived successfully",
+        chats: first50Chats
+    })
+})
 app.listen(port, () => {
     console.log("App is running at: ", port);
 })
