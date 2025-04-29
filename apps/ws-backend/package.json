@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsc -b && node dist/index.js",
+    "dev": "pnpm build && pnpm start",
     "build": "tsc -b",
     "start": "node dist/index.js"
   },
@@ -12,8 +12,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@repo/typescript-config": "workspace:*",
-    "@types/ws": "^8.18.1",
+    "@types/jsonwebtoken": "^9.0.9",
+    "jsonwebtoken": "^9.0.2",
     "ws": "^8.18.1"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/ws": "^8.18.1"
   }
 }
