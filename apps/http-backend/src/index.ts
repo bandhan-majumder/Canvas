@@ -1,11 +1,12 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "./config";
+import { JWT_SECRET } from "@repo/backend-common/config";
 import { middleware } from "./middleware";
+import { CreateUserSchema, SiginSchema, CreateRoomSchema } from "@repo/common/types";
+import { prismaClient } from "@repo/db/client"
 
 const port = process.env.PORT || "3001";
-
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -14,7 +15,18 @@ app.get("/", (req, res) => {
     res.send("All good");
 })
 
-app.post("/signup", (req, res) => {
+app.post("/signup", (req: Request, res: Response) => {
+
+    const data = CreateUserSchema.safeParse(req.body);
+
+    if (!data.success) {
+        res.json({
+            success: false,
+            message: "Incorrect Inputs"
+        })
+        return;
+    }
+
     const { username, password } = req.body();
 
     // TODO: do zod validation
@@ -27,9 +39,19 @@ app.post("/signup", (req, res) => {
     })
 })
 
-app.post("/signin", (req, res) => {
-    const { username, password } = req.body();
+app.post("/signin", (req: Request, res: Response) => {
 
+    const data = SiginSchema.safeParse(req.body());
+
+    if (!data.success) {
+        res.json({
+            success: false,
+            message: "Incorrect inputs"
+        })
+        return;
+    }
+
+    const { username, password } = req.body();
 
     // sign in
 
@@ -44,7 +66,16 @@ app.post("/signin", (req, res) => {
     })
 })
 
-app.post("/create-room", middleware, (req, res) => {
+app.post("/create-room", middleware, (req: Request, res: Response) => {
+    const data = CreateRoomSchema.safeParse(req.body());
+
+    if (!data.success) {
+        res.json({
+            message: "Invalid input",
+            success: false
+        })
+        return;
+    }
 
     res.json({
         success: false,
