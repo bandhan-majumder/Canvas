@@ -27,8 +27,8 @@ app.post("/signup", async (req: Request, res: Response) => {
         return;
     }
 
-    const { email, password } = req.body();
-    
+    const { email, password, name } = req.body;
+
     const isExistingUser = await prismaClient.user.findFirst({
         where: {
             email
@@ -36,12 +36,12 @@ app.post("/signup", async (req: Request, res: Response) => {
     });
 
     // if user already exists
-    if(isExistingUser){
+    if (isExistingUser) {
         res.json({
             success: false,
             message: "User already exists!"
         })
-    return;
+        return;
     }
 
     // save the entry
@@ -49,6 +49,7 @@ app.post("/signup", async (req: Request, res: Response) => {
         data: {
             email,
             password,
+            name
         }
     })
 
@@ -61,7 +62,7 @@ app.post("/signup", async (req: Request, res: Response) => {
 
 app.post("/signin", async (req: Request, res: Response) => {
 
-    const data = SiginSchema.safeParse(req.body());
+    const data = SiginSchema.safeParse(req.body);
 
     if (!data.success) {
         res.json({
@@ -71,7 +72,7 @@ app.post("/signin", async (req: Request, res: Response) => {
         return;
     }
 
-    const { email, password } = req.body();
+    const { email, password } = req.body;
 
     const isExistingUser = await prismaClient.user.findFirst({
         where: {
@@ -79,7 +80,7 @@ app.post("/signin", async (req: Request, res: Response) => {
         }
     })
 
-    if(!isExistingUser){
+    if (!isExistingUser) {
         res.json({
             success: false,
             message: "User does not exists!"
@@ -89,7 +90,7 @@ app.post("/signin", async (req: Request, res: Response) => {
 
     // TODO: hash it back
 
-    if(isExistingUser.password !== password) {
+    if (isExistingUser.password !== password) {
         res.json({
             success: false,
             password: "Invalid input fields"
@@ -107,7 +108,7 @@ app.post("/signin", async (req: Request, res: Response) => {
 })
 
 app.post("/create-room", middleware, async (req: Request, res: Response) => {
-    const data = CreateRoomSchema.safeParse(req.body());
+    const data = CreateRoomSchema.safeParse(req.body);
 
     if (!data.success) {
         res.json({
@@ -117,7 +118,7 @@ app.post("/create-room", middleware, async (req: Request, res: Response) => {
         return;
     }
 
-    const { adminId } = req.body();
+    const { adminId, name } = req.body;
 
     // check if user exists
     const isExistingUser = await prismaClient.user.findFirst({
@@ -126,7 +127,7 @@ app.post("/create-room", middleware, async (req: Request, res: Response) => {
         }
     })
 
-    if(!isExistingUser){
+    if (!isExistingUser) {
         res.json({
             success: false,
             message: "Invalid user"
@@ -134,33 +135,41 @@ app.post("/create-room", middleware, async (req: Request, res: Response) => {
     }
 
     // create a random hash slug
-    const slug = "";
+    const slug = name;
 
-    // create a new room
-    const newRoom = await prismaClient.room.create({
-        data: {
-            slug,
-            adminId
-        }
-    });
+    try {
+        // create a new room
+        const newRoom = await prismaClient.room.create({
+            data: {
+                slug,
+                adminId
+            }
+        });
 
-    res.json({
-        success: false,
-        message: "Room created successfully",
-        roomId: newRoom.id
-    })
+        res.json({
+            success: true,
+            message: "Room created successfully",
+            roomId: newRoom.id
+        })
+    } catch (e: unknown) {
+        console.error(e);
+        res.json({
+            success: false,
+            message: "Room name already exists!"
+        })
+    }
 })
 
 app.get("/chats/:roomId", async (req, res) => {
     const roomId = req.query["roomId"] || 0;
 
     const isExistingRoom = await prismaClient.room.findFirst({
-        where:{
+        where: {
             id: Number(roomId)
         }
     })
 
-    if (!isExistingRoom){
+    if (!isExistingRoom) {
         res.json({
             success: false,
             message: "Room does not exist"
