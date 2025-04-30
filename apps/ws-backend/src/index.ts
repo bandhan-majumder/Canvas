@@ -2,7 +2,8 @@ import { WebSocketServer, WebSocket } from "ws";
 import { checkUser } from "./lib/checkToken";
 import { prismaClient } from "@repo/db/client";
 
-const wss = new WebSocketServer({ port: 3002 });
+const port = process.env.PORT || "8081"
+const wss = new WebSocketServer({ port: Number(port) });
 interface InterfaceUser {
     ws: WebSocket,
     rooms: string[],
@@ -53,6 +54,7 @@ wss.on('connection', (ws, request) => {
 
         if (parsedData.type === "chat") {
             const roomId = parsedData.roomId;
+            const intRoomId = Number(roomId);
             const message = parsedData.message;
             // check if the message is too long or not and other sorts of improvements
 
@@ -62,7 +64,7 @@ wss.on('connection', (ws, request) => {
             await prismaClient.chat.create({
                 data: {
                     message,
-                    roomId,
+                    roomId: intRoomId,
                     userId
                 }
             })

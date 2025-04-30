@@ -6,7 +6,7 @@ import { middleware } from "./middleware";
 import { CreateUserSchema, SiginSchema, CreateRoomSchema } from "@repo/common/types";
 import { prismaClient } from "@repo/db/client"
 
-const port = process.env.PORT || "3001";
+const port = process.env.PORT || "8080";
 const app = express();
 app.use(express.json());
 app.use(cors());

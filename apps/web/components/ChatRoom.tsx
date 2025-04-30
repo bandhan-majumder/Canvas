@@ -9,6 +9,5 @@ async function getChats(slug: string){
 
 export async function ChatRoom({id}: {id: string}){
     const messages = await getChats(id);
-
     return <ChatRoomClient id={id} messages={messages}/>
 }
