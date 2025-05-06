@@ -11,7 +11,7 @@ export class Game {
     private clicked: boolean;
     private startX: number = 0;
     private startY: number = 0;
-    private selectedTool: Tool = Tool.Square;
+    private selectedTool: Tool = Tool.Square; // by default, select square
 
     constructor(canvas: HTMLCanvasElement, roomId: string, socket: WebSocket) {
         this.canvas = canvas;
@@ -50,6 +50,13 @@ export class Game {
             if (shape.type === "circle") {
                 this.ctx.beginPath();
                 this.ctx.arc(shape.centerX, shape.centerY, shape.radius, 0, Math.PI * 2);
+                this.ctx.stroke();
+                this.ctx.closePath();
+            }
+            if (shape.type === "line") {
+                this.ctx.beginPath();
+                this.ctx.moveTo(shape.startX, shape.startY);
+                this.ctx.lineTo(shape.endX, shape.endY);
                 this.ctx.stroke();
                 this.ctx.closePath();
             }
@@ -108,6 +115,15 @@ export class Game {
                 centerY: this.startY + radius
             }
 
+        } 
+        else if (this.selectedTool === Tool.Line) {
+            shape = {
+                type: "line",
+                startX: this.startX,
+                startY: this.startY,
+                endX: e.clientX,
+                endY: e.clientY
+            }
         }
 
         if (!shape) return;
@@ -142,6 +158,13 @@ export class Game {
                 const centerY = this.startY + radius;
                 this.ctx.beginPath();
                 this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                this.ctx.stroke();
+                this.ctx.closePath();
+            } 
+            else if (this.selectedTool === Tool.Line) {
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.startX, this.startY);
+                this.ctx.lineTo(e.clientX, e.clientY);
                 this.ctx.stroke();
                 this.ctx.closePath();
             }

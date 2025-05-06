@@ -3,12 +3,12 @@
 import { useWindowSize } from '@/hooks/useWindowSize';
 import React, { useEffect, useRef, useState } from 'react'
 import { IconButton } from './IconButton';
-import { Circle, Pencil, Square } from 'lucide-react';
+import { Circle, Minus, Square } from 'lucide-react';
 import { Tool } from '@/types/tools';
 import { Game } from '@/draw/Game';
 
 function Canvas({ roomId, socket }: { roomId: string, socket: WebSocket }) {
-    const [selectedTool, setSelectedTool] = useState<Tool>(Tool.Pencil);
+    const [selectedTool, setSelectedTool] = useState<Tool>(Tool.Square);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [game, setGame] = useState<Game>();
 
@@ -39,13 +39,9 @@ function Canvas({ roomId, socket }: { roomId: string, socket: WebSocket }) {
 }
 
 function TopBar({ selectedTool, setSelectedTool }: { selectedTool: Tool, setSelectedTool: (tool: Tool) => void }) {
-    return <div style={{
-        position: "fixed",
-        top: 10,
-        left: 10,
-    }}>
+    return <div className="fixed top-10 left-10 bg-[#232329] p-2 rounded-md shadow-md">
         <div className='flex gap-2'>
-            <IconButton icon={<Pencil />} onClick={() => setSelectedTool(Tool.Pencil)} activated={selectedTool === Tool.Pencil} />
+            <IconButton icon={<Minus />} onClick={() => setSelectedTool(Tool.Line)} activated={selectedTool === Tool.Line} />
             <IconButton icon={<Square />} onClick={() => setSelectedTool(Tool.Square)} activated={selectedTool === Tool.Square} />
             <IconButton icon={<Circle />} onClick={() => setSelectedTool(Tool.Circle)} activated={selectedTool === Tool.Circle} />
         </div>

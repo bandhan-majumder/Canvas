@@ -9,9 +9,8 @@ export function useSocket() {
 
     const [socket, setSocket] = useState<WebSocket>();
 
-    // TODO: fix this hardcoded token thing
     useEffect(() => {
-        const ws = new WebSocket(`${WS_URL}?token=`);
+        const ws = new WebSocket(`${WS_URL}?token=${localStorage.getItem('authToken')}`);
 
         ws.onopen = () => {
             setLoading(false);

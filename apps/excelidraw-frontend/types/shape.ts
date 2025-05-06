@@ -10,7 +10,7 @@ export type Shape = {
     centerY: number,
     radius: number
 } | {
-    type: "pencil",
+    type: "line",
     startX: number,
     startY: number,
     endX: number,
