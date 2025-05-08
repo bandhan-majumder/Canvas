@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import Canvas from './Canvas';
 import Loader from './Loader';
 
-function RoomCanvas({ roomId }: { roomId: string }) {
+function RoomCanvas({ roomId, token }: { roomId: string, token: string | null | undefined }) {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [isConnecting, setIsConnecting] = useState(true);
   
@@ -13,7 +13,7 @@ function RoomCanvas({ roomId }: { roomId: string }) {
     let ws: WebSocket;
     
     try {
-      ws = new WebSocket(`${WS_BACKEND_URL}?token=${localStorage.getItem('authToken')}`);
+      ws = new WebSocket(`${WS_BACKEND_URL}?token=${token}`);
       
       // when the socket connection opens, add it to the state
       ws.onopen = () => {

@@ -25,9 +25,9 @@ function Page() {
         }
     }
     return (
-        <div>
-            <input type="text" placeholder='Enter a name for your canvas' className='border-2 border-gray-300 rounded-md p-2' onChange={(e) => setCanvasName(e.target.value)} />
-            <button className='bg-black text-white' onClick={createCanvasHandler}>Create a canvas</button>
+        <div className='bg-black h-screen flex flex-col justify-center items-center'>
+            <input maxLength={13} type="text" placeholder='ex: sample-canvas' className='bg-gray-600 border-2 border-gray-300 rounded-md p-4 text-white font-medium text-md bg-none' onChange={(e) => setCanvasName(e.target.value)} />
+            <button className=' text-black bg-[#B2AEFF] mt-10 p-2 rounded-xl' onClick={createCanvasHandler}>Create canvas</button>
         </div>
     )
 }
