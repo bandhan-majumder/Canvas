@@ -1,5 +1,5 @@
 {
-  "name": "Canvas",
+  "name": "@repo/canvas",
   "private": true,
   "scripts": {
     "build": "turbo run build",
