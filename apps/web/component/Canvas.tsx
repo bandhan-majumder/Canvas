@@ -58,7 +58,7 @@ function Canvas({ roomId, socket }: { roomId: string, socket: WebSocket }) {
                 <ToolsBar selectedTool={selectedTool} setSelectedTool={setSelectedTool} />
             </div>
             <div className='fixed top-4 right-10 flex gap-4'>
-                <button className='text-black p-2 rounded-lg text-sm bg-[#B2AEFF] cursor-pointer transform hover:scale-125 hover:opacity-80 transition ease-out duration-300' onClick={onShareHandler}>Share</button>
+                <button className='text-black p-2 rounded-lg text-sm bg-[#B2AEFF] cursor-pointer' onClick={onShareHandler}>Share</button>
                 <div className='bg-[#403E6A] p-2 rounded-xl text-white flex justify-center items-center cursor-pointer'>
                     <Link href={"https://github.com/bandhan-majumder/Canvas"} target='blank'>
                     <Github className='transition ease-out duration-300'/></Link>
