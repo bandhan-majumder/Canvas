@@ -12,7 +12,7 @@ pnpm dev
 ```
 
 ## This turbo repo contains 4 projects
-1. Frontend
+1. Web
 2. Websocket backend
 3. Http backend
 4. Chat app (for future)

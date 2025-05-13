@@ -1,11 +1,7 @@
 import RoomCanvas from "@/component/RoomCanvas";
 import { getServerSession } from "next-auth";
 
-async function CanvasPage({ params }: {
-    params: {
-        roomId: string
-    }
-}) {
+async function CanvasPage({params}: {params: Promise<{ roomId: string }>}) {
     const session = await getServerSession();
 
     // TODO: pass the actual token

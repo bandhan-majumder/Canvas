@@ -1,7 +1,6 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prismaClient } from "@repo/db/client";
-import bcrypt from "bcrypt";
 
 const handler = NextAuth({
     providers: [
@@ -12,6 +11,7 @@ const handler = NextAuth({
                 password: { label: "Password", type: "password", placeholder: "* * * * *" }
             },
             async authorize(credentials, req) {
+                console.log("Request body", req.body);
                 if (!credentials?.email || !credentials?.password) {
                     return null;
                 }
