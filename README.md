@@ -1,6 +1,6 @@
 ## Draw shapes, share, collaborate
 
-![demo image](image.png)
+![demo image](/assets/image.png)
 
 ### Steps to run locally
 
