@@ -23,4 +23,4 @@ jobs:
 
     - name: Deploy to EC2
       run: |
-        ssh ubuntu@13.203.213.179 -t "cd Canvas/ && git pull origin main && export PATH=/home/ubuntu/.nvm/versions/node/v22.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin && npm install -g pnpm && pnpm install && pnpm run build && pm2 restart http-backend && pm2 restart ws-backend && pm2 restart web"
+        ssh -T ubuntu@13.203.213.179 -t "cd Canvas/ && git pull origin main && export PATH=/home/ubuntu/.nvm/versions/node/v22.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin && npm install -g pnpm && pnpm install && pnpm run build && pm2 restart http-backend && pm2 restart ws-backend && pm2 restart web"
