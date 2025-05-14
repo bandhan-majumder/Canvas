@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm build && pnpm start",
-    "build": "tsc -b",
-    "start": "node dist/index.js"
+    "dev1": "pnpm build && pnpm start",
+    "build1": "tsc -b",
+    "start1": "node dist/index.js"
   },
   "keywords": [],
   "author": "",

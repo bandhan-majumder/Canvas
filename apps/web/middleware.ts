@@ -10,13 +10,14 @@ export default withAuth(
       authorized: ({ token }) => !!token,
     },
     pages: {
-      signIn: "/api/auth/signin",
+      signIn: "/auth/signin",
     },
   }
 );
 
 export const config = {
   matcher: [
+    "/canvas",
     "/canvas/:path*"
   ],
 };

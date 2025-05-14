@@ -1,6 +1,5 @@
 import { getServerSession } from "next-auth";
 import React from "react";
-import SingInButton from "@/component/SignIn";
 import { redirect } from "next/navigation";
 
 export default async function Home() {
@@ -11,9 +10,5 @@ export default async function Home() {
     return redirect('/canvas');
   }
 
-  return (
-    <div className="bg-black h-screen w-screen text-white">
-      <SingInButton isSignIn={isUser === undefined ? true : false} />
-    </div>
-  );
+  return redirect('/auth/signin');
 }

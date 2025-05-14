@@ -1,5 +1,5 @@
 import { Shape } from "@/types/shape";
-import { getExistingShape } from "./http";
+import { getExistingShape } from "./helper";
 import { Tool } from "@/types/tools";
 
 export class Game {
@@ -35,6 +35,7 @@ export class Game {
 
     async init() {
         this.existingShapes = await getExistingShape(this.roomId);
+        console.log("Existing shapes:", this.existingShapes);
         this.clearAndRenderCanvas();
     }
 
@@ -270,7 +271,7 @@ export class Game {
     zoomOutHandler = () => {
         this.scale *= this.scaleMultiplier;
         this.scale < this.maxZoomout && (this.scale = this.maxZoomout);
-        console.log("Zoom out, new scale:", this.scale);
+        
 
         // Redraw the canvas with the new scale
         this.clearAndRenderCanvas();

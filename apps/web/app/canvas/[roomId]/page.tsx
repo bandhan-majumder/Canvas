@@ -4,10 +4,13 @@ import { getServerSession } from "next-auth";
 async function CanvasPage({params}: {params: Promise<{ roomId: string }>}) {
     const session = await getServerSession();
 
-    // TODO: pass the actual token
-    const token = session?.user?.email;
+    if (!session?.user) {
+        throw new Error("User not authenticated");
+    }
+
     const roomId = (await params).roomId;
-    return <RoomCanvas roomId={roomId} token={token}/>
+    const user = session.user;
+    return <RoomCanvas roomId={roomId} userInfo={user}/>
 }
 
 export default CanvasPage

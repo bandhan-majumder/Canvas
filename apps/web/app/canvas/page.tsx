@@ -1,27 +1,32 @@
 "use client";
 
-import { HTTP_BACKEND_URL } from '@/config'
-import axios from 'axios'
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast';
 
 function Page() {
     const router = useRouter();
     const [canvasName, setCanvasName] = useState<string>('');
     const createCanvasHandler = async () => {
         const body = {
-            name: canvasName
+            slug: canvasName
         }
-        const response = await axios.post(`${HTTP_BACKEND_URL}/create-room`, body, {
+        
+        const response = await fetch(`/api/canvas`, {
+            method: 'POST',
             headers: {
-            Authorization: `Bearer ${localStorage.getItem('authToken')}`
-            }
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
         });
 
-        if (response.data.success) {
-            router.push(`/canvas/${response.data.roomId}`);
+        if (response.status === 200) {
+            toast.success('Canvas created successfully');
+            const data = await response.json();
+            router.push(`/canvas/${data.roomId}`);
         } else {
-            alert('Failed to create canvas');
+            const errorData = await response.json();
+            toast.error(errorData.message || 'Failed to create canvas');
         }
     }
     return (
