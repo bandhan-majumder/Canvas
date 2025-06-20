@@ -93,7 +93,7 @@ wss.on('connection', async (ws, request) => {
             // add in queue first and then store to db asyncronously
 
             // add the data to database using a pipeline
-          await prismaClient.chat.create({
+          await prismaClient.shape.create({
             data: {
               message,
               roomId: parseInt(roomId, 10),

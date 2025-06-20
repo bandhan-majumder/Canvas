@@ -16,7 +16,7 @@ export async function GET(request: Request) {
         return NextResponse.json("Missing roomId", { status: 400 });
     }
 
-    const roomInfo = await prismaClient.room.findFirst({
+    const roomInfo = await prismaClient.canvas.findFirst({
         where: {
             slug: roomSlug
         },

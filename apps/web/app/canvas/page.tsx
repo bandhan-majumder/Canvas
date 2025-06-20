@@ -16,6 +16,7 @@ function Page() {
 
         if (!trimmedName) {
             toast.error('Canvas name cannot be empty');
+            setLoading(false);
             return;
         }
 
@@ -40,6 +41,7 @@ function Page() {
         } else {
             const errorData = await response.json();
             toast.error(errorData.message || 'Failed to create canvas');
+            setLoading(false);
         }
     }
     return (

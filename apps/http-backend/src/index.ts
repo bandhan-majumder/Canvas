@@ -122,12 +122,12 @@ app.post("/create-room", middleware, async (req: Request, res: Response) => {
 
     // coming from middleware
     // @ts-ignore
-    const adminId = req.userId;
+    const userId = req.userId;
 
     // check if user exists
     const isExistingUser = await prismaClient.user.findFirst({
         where: {
-            id: adminId
+            id: userId
         }
     })
 
@@ -143,10 +143,10 @@ app.post("/create-room", middleware, async (req: Request, res: Response) => {
 
     try {
         // create a new room
-        const newRoom = await prismaClient.room.create({
+        const newRoom = await prismaClient.canvas.create({
             data: {
                 slug,
-                adminId
+                userId
             }
         });
 
@@ -168,7 +168,7 @@ app.get("/chats/:roomId", async (req, res) => {
     const roomId = Number(req.params.roomId);
 
     // check if the room exists
-    const isExistingRoom = await prismaClient.room.findFirst({
+    const isExistingRoom = await prismaClient.canvas.findFirst({
         where: {
             id: roomId
         }
@@ -182,7 +182,7 @@ app.get("/chats/:roomId", async (req, res) => {
     }
 
     // retrieve first 50 messages
-    const first50Chats = await prismaClient.chat.findMany({
+    const first50Chats = await prismaClient.shape.findMany({
         where: {
             roomId
         },
@@ -203,7 +203,7 @@ app.get("/room/:slug", async (req, res) => {
     const slug = req.params.slug.toString();
 
     // check if the room exists
-    const isExistingRoom = await prismaClient.room.findFirst({
+    const isExistingRoom = await prismaClient.canvas.findFirst({
         where: {
             slug
         }

@@ -1,9 +1,10 @@
+import { authOptions } from "@/lib/auth";
 import { prismaClient } from "@repo/db/client";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
 
     if (!session?.user) {
         throw new Error("User not authenticated");
@@ -24,10 +25,10 @@ export async function POST(request: Request) {
     }
 
     try {
-        const newRoom = await prismaClient.room.create({
+        const newRoom = await prismaClient.canvas.create({
             data: {
                 slug,
-                adminId: isExistingUser.id,
+                userId: isExistingUser.id,
             }
         });
 

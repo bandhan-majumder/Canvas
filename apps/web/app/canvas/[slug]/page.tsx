@@ -16,18 +16,18 @@ async function CanvasPage({ params }: { params: Promise<{ slug: string }> }) {
     }
 
     try {
-        const roomInfo = await prismaClient.room.findFirst({
+        const roomInfo = await prismaClient.canvas.findFirst({
             where: {
                 slug: slug
             },
         });
-        const user = session.user;
 
         if(!roomInfo) {
             throw new Error("Room not found");
         }
-        
-        return <RoomCanvas roomId={roomInfo.id.toString()} userInfo={user} />;
+
+        //@ts-ignore
+        return <RoomCanvas roomId={roomInfo.id.toString()} userId={session.id} />;
     } catch (error) {
         return <Room404 />;
     }
