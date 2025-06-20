@@ -52,16 +52,21 @@ export const authOptions: NextAuthOptions = {
         },
         async jwt({ token, user }) {
             // these id, email, and name already exist in the default token. For adding new properties, we can do the operations like below after defining type
-            // if (user){
-            //     token.id = user.id;
-            //     token.email = user.email;
-            //     token.name = user.name;
-            // }
+            if (user){
+                token.id = user.id;
+                token.email = user.email;
+                token.name = user.name;
+            }
             return token;
         },
-        async session({ session }) {
-            // same like jwt, for adding new properties, add types first and then assign in from the token.
-           return session;
+        async session({ session, token }) {
+            // Add custom properties to the session object if needed
+            if (token) {
+                (session as any).id = token.id;
+                (session as any).email = token.email;
+                (session as any).name = token.name;
+            }
+            return session;
         }
     },
 }

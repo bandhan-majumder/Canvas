@@ -35,7 +35,6 @@ export class Game {
 
     async init() {
         this.existingShapes = await getExistingShape(this.roomId);
-        console.log("Existing shapes:", this.existingShapes);
         this.clearAndRenderCanvas();
     }
 

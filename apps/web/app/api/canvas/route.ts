@@ -32,7 +32,7 @@ export async function POST(request: Request) {
         });
 
         return NextResponse.json({
-            roomId: newRoom.id
+            slug: newRoom.slug,
         }, { status: 200 })
     } catch (e: unknown) {
         return NextResponse.json({

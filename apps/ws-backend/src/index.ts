@@ -22,8 +22,7 @@ wss.on('connection', async (ws, request) => {
   }
   
   const queryParams = new URLSearchParams(url.split('?')[1]);
-  const email = queryParams.get('email') ?? "";
-  const name = queryParams.get('name') ?? "";
+  const userId = queryParams.get('userId') ?? "";
   
   // TODO: properly authentictate the user
   // if (!isUserAuthenticated) {
@@ -34,8 +33,7 @@ wss.on('connection', async (ws, request) => {
   try {
     const existingUser = await prismaClient.user.findFirst({
       where: {
-        email,
-        name
+        id: userId
       }
     });
     
@@ -43,8 +41,6 @@ wss.on('connection', async (ws, request) => {
       ws.close();
       return;
     }
-    
-    const userId = existingUser.id!;
     
     // Add user to users array
     users.push({

@@ -18,7 +18,7 @@ function RoomCanvas({ roomId, userInfo }: { roomId: string, userInfo: any }) {
     let ws: WebSocket;
     
     try {
-      ws = new WebSocket(`${WS_BACKEND_URL}?email=${userInfo.email}&name=${userInfo.name}`);
+      ws = new WebSocket(`${WS_BACKEND_URL}?userId=${userInfo.id}`);
       
       // when the socket connection opens, add it to the state
       ws.onopen = () => {
