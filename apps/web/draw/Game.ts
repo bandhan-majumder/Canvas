@@ -89,10 +89,10 @@ export class Game {
 
     initHandlers() {
         this.socket.onmessage = (event) => {
-            const message = JSON.parse(event.data);
+            const parsedData = JSON.parse(event.data);
 
-            if (message.type === "chat") {
-                const parsedShape = JSON.parse(message.message);
+            if (parsedData.type === "chat") {
+                const parsedShape = JSON.parse(parsedData.object);
                 this.existingShapes.push(parsedShape);
                 this.clearAndRenderCanvas();
             }
@@ -190,7 +190,7 @@ export class Game {
         this.socket.send(JSON.stringify({
             type: "chat",
             roomId: this.roomId,
-            message: JSON.stringify({
+            object: JSON.stringify({
                 ...shape
             })
         }));

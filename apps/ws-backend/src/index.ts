@@ -14,47 +14,34 @@ interface InterfaceUser {
 const users: InterfaceUser[] = [];
 
 wss.on('connection', async (ws, request) => {
-
   const url = request.url;
+  
   if (!url) {
     ws.close();
     return;
   }
-
+  
   const queryParams = new URLSearchParams(url.split('?')[1]);
   const userId = queryParams.get('userId') ?? "";
-
-  // TODO: properly authentictate the user
+  
   if (!userId) {
     ws.close();
     return;
   }
 
+  users.push({
+    userId,
+    rooms: [],
+    ws
+  });
+  
   try {
-    const existingUser = await prismaClient.user.findFirst({
-      where: {
-        id: userId
-      }
-    });
-
-    if (!existingUser) {
-      ws.close();
-      return;
-    }
-
-    // Add user to users array
-    users.push({
-      userId: userId,
-      rooms: [],
-      ws
-    });
-
     // Handle messages
     ws.on('message', async (data) => {
       try {
         const parsedData = JSON.parse(data.toString());
-
         const user = users.find(x => x.ws === ws);
+        
         if (!user) {
           ws.close();
           return;
@@ -63,7 +50,6 @@ wss.on('connection', async (ws, request) => {
         // join a room
         if (parsedData.type === "join_room") {
           const roomId = parsedData.roomId.toString();
-
           // Avoid duplicate room entries
           if (!user.rooms.includes(roomId)) {
             user.rooms.push(roomId);
@@ -87,7 +73,7 @@ wss.on('connection', async (ws, request) => {
         // send a chat message
         if (parsedData.type === "chat") {
           const roomId = parsedData.roomId.toString();
-          const message = parsedData.message;
+          const object = parsedData.object;
           // check if the message is too long or not and other sorts of improvements
 
           // add in queue first and then store to db asyncronously
@@ -95,19 +81,19 @@ wss.on('connection', async (ws, request) => {
           // add the data to database using a pipeline
           await prismaClient.shape.create({
             data: {
-              object: message,
+              object,
               canvasId: roomId,
               userId
             }
           });
 
-          // Broadcast message to all users in the room
-          users.forEach(user => {
-            if (user.rooms.includes(roomId)) {
-              user.ws.send(JSON.stringify({
+          // Broadcast message to all users in the room except the sender
+          users.forEach(u => {
+            if (u.rooms.includes(roomId) && u.ws !== ws) {
+              u.ws.send(JSON.stringify({
                 type: "chat",
-                message,
-                roomId: parseInt(roomId, 10),
+                object,
+                roomId,
               }))
             }
           })
