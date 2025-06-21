@@ -6,50 +6,85 @@ import Loader from './Loader';
 
 function RoomCanvas({ roomId, userId }: { roomId: string, userId: any }) {
   if (!roomId || !userId) {
-    return 
-  };
-  
+    return null;
+  }
+
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [isConnecting, setIsConnecting] = useState(true);
-  
-  // add websocket connection
+  const [connectionError, setConnectionError] = useState<string | null>(null);
+  const wsRef = useRef<WebSocket | null>(null);
+
   useEffect(() => {
     let ws: WebSocket;
     
-    try {
-      ws = new WebSocket(`${WS_BACKEND_URL}?userId=${userId}`);
+    const connectWebSocket = () => {
+      try {
+        ws = new WebSocket(`${WS_BACKEND_URL}?userId=${userId}`);
+        wsRef.current = ws;
+
+        ws.onopen = () => {
       
-      // when the socket connection opens, add it to the state
-      ws.onopen = () => {
-        // connect to the room
-        ws.send(JSON.stringify({
-          type: "join_room",
-          roomId
-        }));
-        
-        setSocket(ws);
-        setIsConnecting(false);
-      };
-      
-      ws.onerror = () => {
-        setIsConnecting(false);
-      };
-      
-      ws.onclose = () => {
-        if (isConnecting) {
+          // Send join room message
+          ws.send(JSON.stringify({
+            type: "join_room",
+            roomId
+          }));
+          
+          setSocket(ws);
           setIsConnecting(false);
-        }
-      };
-    } catch (error) {
-      setIsConnecting(false);
-    }
-    
-    return () => {
-      if (ws) {
-        ws.close();
+          setConnectionError(null);
+        };
+
+        ws.onerror = (error) => {
+          console.error("WebSocket error:", error);
+          setConnectionError("Failed to connect to server");
+          setIsConnecting(false);
+        };
+
+        ws.onclose = (event) => {
+          console.log("WebSocket closed:", event.code, event.reason);
+          setSocket(null);
+          
+          if (isConnecting) {
+            setConnectionError("Connection failed");
+            setIsConnecting(false);
+          }
+        };
+
+      } catch (error) {
+        console.error("WebSocket connection error:", error);
+        setConnectionError("Failed to establish connection");
+        setIsConnecting(false);
       }
     };
-  }, [roomId]);
+
+    connectWebSocket();
+
+    // Cleanup function
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+        wsRef.current = null;
+      }
+    };
+  }, [roomId, userId]);
+
+  if (connectionError) {
+    return (
+      <div className="h-screen w-full bg-[#111011] flex items-center justify-center">
+        <div className="text-center text-white">
+          <h2 className="text-xl mb-4">Connection Error</h2>
+          <p className="text-gray-400 mb-4">{connectionError}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen w-full bg-[#111011]">
@@ -59,7 +94,6 @@ function RoomCanvas({ roomId, userId }: { roomId: string, userId: any }) {
         </div>
       )}
       
-      {/* Show loader with fade-out effect when connecting */}
       {(isConnecting || !socket) && (
         <div className={`absolute inset-0 transition-opacity duration-300 ease-in-out ${socket ? 'opacity-0' : 'opacity-100'}`}>
           <Loader />

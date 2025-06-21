@@ -25,10 +25,10 @@ wss.on('connection', async (ws, request) => {
   const userId = queryParams.get('userId') ?? "";
 
   // TODO: properly authentictate the user
-  // if (!isUserAuthenticated) {
-  // ws.close();
-  // return;
-  // }
+  if (!userId) {
+    ws.close();
+    return;
+  }
 
   try {
     const existingUser = await prismaClient.user.findFirst({
