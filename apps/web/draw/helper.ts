@@ -12,9 +12,13 @@ export async function getExistingShape(roomId: string) {
     const data = await response.json();
     const messages = data.shapes || [];
 
-    const shapes = messages.map((msg: { message: string }) => {
-        const messageData = JSON.parse(msg.message);
-        return messageData;
+    const shapes = messages.map((msg: { object: string }) => {
+        try {
+            const messageData = JSON.parse(msg.object);
+            return messageData;
+        } catch (error) {
+            console.log("Error parsing object data: ", error);
+        }
     })
 
     return shapes;

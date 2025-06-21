@@ -165,7 +165,7 @@ app.post("/create-room", middleware, async (req: Request, res: Response) => {
 })
 
 app.get("/chats/:roomId", async (req, res) => {
-    const roomId = Number(req.params.roomId);
+    const roomId = req.params.roomId;
 
     // check if the room exists
     const isExistingRoom = await prismaClient.canvas.findFirst({
@@ -184,7 +184,7 @@ app.get("/chats/:roomId", async (req, res) => {
     // retrieve first 50 messages
     const first50Chats = await prismaClient.shape.findMany({
         where: {
-            roomId
+            canvasId: roomId
         },
         orderBy: {
             id: "desc"

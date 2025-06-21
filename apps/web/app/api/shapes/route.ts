@@ -19,7 +19,7 @@ export async function GET(request: Request) {
 
     const allExistingShapes = await prismaClient.shape.findMany({
         where: {
-            roomId: parseInt(roomId, 10)
+            canvasId: roomId
         },
         orderBy: {
             id: "desc"
