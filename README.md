@@ -7,8 +7,8 @@
 ```
 git clone https://github.com/bandhan-majumder/Canvas
 cd Canvas
-pnpm install
-pnpm dev
+npm install
+npm dev
 ```
 
 ## This turbo repo contains 4 projects

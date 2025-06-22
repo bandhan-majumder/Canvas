@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev1": "pnpm build && pnpm start",
+    "dev1": "npm run build && npm run start",
     "build1": "tsc -b",
     "start1": "node dist/index.js"
   },
@@ -17,12 +17,12 @@
     "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
+    "@repo/typescript-config": "*",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
-    "@repo/backend-common": "workspace:*",
-    "@repo/common": "workspace:*",
-    "@repo/db": "workspace:*"
+    "@repo/backend-common": "*",
+    "@repo/common": "*",
+    "@repo/db": "*"
   }
 }
