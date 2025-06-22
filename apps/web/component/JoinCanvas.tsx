@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast';
 import { getAllRoomInfo } from '@/draw/helper';
 import ExistingCanvasCard, { Canvas } from './ExistingCanvasCard';
+import { CanvasCardSkeleton, CanvasListSkeleton } from './ExistingCardsSkeleton';
 
 function JoinCanvas() {
   const router = useRouter();
@@ -102,9 +103,11 @@ function JoinCanvas() {
         <h2 className='text-white text-2xl font-bold mb-6 text-center'>Join Existing Canvas</h2>
         
         {fetchingCanvases ? (
-          <div className='text-white text-center'>Loading canvases...</div>
+          <div className='text-white text-center'>
+            <CanvasListSkeleton />
+          </div>
         ) : canvases.length === 0 ? (
-          <div className='text-gray-400 text-center'>No canvases available</div>
+          <div className='text-gray-400 text-center'>No canvases available.</div>
         ) : (
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
             {canvases.map((canvas) => (

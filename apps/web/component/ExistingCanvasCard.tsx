@@ -27,7 +27,7 @@ function ExistingCanvasCard({canvas, joinCanvasHandler}: {
                 onClick={() => joinCanvasHandler(canvas.slug)}
                 className='w-full bg-[#B2AEFF] hover:bg-[#9B8EFF] text-black py-2 px-4 rounded-md font-medium transition-colors cursor-pointer'
             >
-                Join Canvas
+                Join
             </button>
         </div>
     )
