@@ -1,0 +1,10 @@
+{
+  "buildCommand": "pnpm install --frozen-lockfile && pnpm build",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "framework": null,
+  "functions": {
+    "app/**": {
+      "runtime": "nodejs20.x"
+    }
+  }
+}
