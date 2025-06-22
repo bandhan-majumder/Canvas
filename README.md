@@ -7,16 +7,36 @@
 ```
 git clone https://github.com/bandhan-majumder/Canvas
 cd Canvas
-npm install
-npm dev
+npm install 
 ```
 
-## This turbo repo contains 4 projects
+- Copy the .env.sample files and setup the db url and password 
+
+```
+cp apps/web/.env.sample apps/web/.env
+cp packages/db/.env.sample packages/db/.env
+```
+
+- Migrate the database (first time only) and generate the client
+
+```
+cd packages/db && npx prisma migrate dev
+npx prisma generate
+```
+
+- go to the root directory and run
+
+```
+cd ../..
+npm run dev
+```
+
+## This turbo repo contains 2 main projects
 
 1. Web
 2. Websocket backend
-3. Http backend
-4. Chat app (for future)
+
+- Websocket backend is deployed on render.
 
 ## Features
 
@@ -24,3 +44,12 @@ npm dev
 2. Collaborate in real time
 3. Zoom feature
 4. Get data synced in real time
+
+## Technologies used
+1. Turbo repo, nextjs, next-auth
+2. Websocket
+3. Prisma, Postgres
+
+## Deployed on
+1. Render (websocket)
+2. Vercel (frontend)

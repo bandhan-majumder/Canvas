@@ -13,7 +13,7 @@ export const Header = () => {
     return null; // Prevent rendering the header if user is logged in
   }
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-gray-900/70 backdrop-blur-xl border-b border-gray-800/50">
+    <header className="top-0 left-0 right-0 z-50 bg-gray-900/70 backdrop-blur-xl border-b border-gray-800/50">
       <div className="container mx-auto px-6 py-5 flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className="w-9 h-9 bg-white rounded-xl flex items-center justify-center shadow-lg">
@@ -29,27 +29,6 @@ export const Header = () => {
             Canvas
           </span>
         </div>
-
-        <nav className="hidden md:flex items-center space-x-10">
-          <a
-            href="#features"
-            className="text-gray-400 hover:text-white transition-colors duration-300 font-medium"
-          >
-            Features
-          </a>
-          <a
-            href="#demo"
-            className="text-gray-400 hover:text-white transition-colors duration-300 font-medium"
-          >
-            Demo
-          </a>
-          <a
-            href="#about"
-            className="text-gray-400 hover:text-white transition-colors duration-300 font-medium"
-          >
-            About
-          </a>
-        </nav>
 
         <div className="flex items-center space-x-4">
           <Button
