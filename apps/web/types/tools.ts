@@ -1,6 +1,6 @@
 export enum Tool {
-    Pencil = "pencil",
-    Circle = "circle",
-    Square = "rect",
-    Line = "line"
+  Pencil = "pencil",
+  Circle = "circle",
+  Square = "rect",
+  Line = "line",
 }

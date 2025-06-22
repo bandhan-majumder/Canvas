@@ -10,7 +10,9 @@ export default async function Home() {
   // }
 
   // return redirect('/auth/signin');
-  return <div>
-    <LandingPage />
-  </div>;
+  return (
+    <div>
+      <LandingPage />
+    </div>
+  );
 }

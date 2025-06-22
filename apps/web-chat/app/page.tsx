@@ -8,23 +8,35 @@ export default function Home() {
   const [roomId, setRoomId] = useState("");
 
   async function handleJoin() {
-    router.push(`/room/${roomId}`)
+    router.push(`/room/${roomId}`);
   }
 
   return (
-    <div style={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      height: "100vh",
-      width: "100vw"
-    }}>
-      <input type="text" placeholder="Room id" onChange={(e) => setRoomId(e.target.value)} style={{
-        padding: 10
-      }} />
-      <button onClick={handleJoin} style={{
-        padding: 10
-      }}>Join room</button>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        width: "100vw",
+      }}
+    >
+      <input
+        type="text"
+        placeholder="Room id"
+        onChange={(e) => setRoomId(e.target.value)}
+        style={{
+          padding: 10,
+        }}
+      />
+      <button
+        onClick={handleJoin}
+        style={{
+          padding: 10,
+        }}
+      >
+        Join room
+      </button>
     </div>
   );
 }

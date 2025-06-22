@@ -13,17 +13,17 @@ interface InterfaceUser {
 // state management
 const users: InterfaceUser[] = [];
 
-wss.on('connection', async (ws, request) => {
+wss.on("connection", async (ws, request) => {
   const url = request.url;
-  
+
   if (!url) {
     ws.close();
     return;
   }
-  
-  const queryParams = new URLSearchParams(url.split('?')[1]);
-  const userId = queryParams.get('userId') ?? "";
-  
+
+  const queryParams = new URLSearchParams(url.split("?")[1]);
+  const userId = queryParams.get("userId") ?? "";
+
   if (!userId) {
     ws.close();
     return;
@@ -32,16 +32,16 @@ wss.on('connection', async (ws, request) => {
   users.push({
     userId,
     rooms: [],
-    ws
+    ws,
   });
-  
+
   try {
     // Handle messages
-    ws.on('message', async (data) => {
+    ws.on("message", async (data) => {
       try {
         const parsedData = JSON.parse(data.toString());
-        const user = users.find(x => x.ws === ws);
-        
+        const user = users.find((x) => x.ws === ws);
+
         if (!user) {
           ws.close();
           return;
@@ -55,10 +55,12 @@ wss.on('connection', async (ws, request) => {
             user.rooms.push(roomId);
 
             // Confirm room join to the user
-            ws.send(JSON.stringify({
-              type: "room_joined",
-              roomId
-            }));
+            ws.send(
+              JSON.stringify({
+                type: "room_joined",
+                roomId,
+              }),
+            );
           }
         }
 
@@ -67,7 +69,7 @@ wss.on('connection', async (ws, request) => {
           const roomId = parsedData.roomId.toString();
 
           // Remove the room from user's room list
-          user.rooms = user.rooms.filter(x => x !== roomId);
+          user.rooms = user.rooms.filter((x) => x !== roomId);
         }
 
         // send a chat message
@@ -83,20 +85,22 @@ wss.on('connection', async (ws, request) => {
             data: {
               object,
               canvasId: roomId,
-              userId
-            }
+              userId,
+            },
           });
 
           // Broadcast message to all users in the room except the sender
-          users.forEach(u => {
+          users.forEach((u) => {
             if (u.rooms.includes(roomId) && u.ws !== ws) {
-              u.ws.send(JSON.stringify({
-                type: "chat",
-                object,
-                roomId,
-              }))
+              u.ws.send(
+                JSON.stringify({
+                  type: "chat",
+                  object,
+                  roomId,
+                }),
+              );
             }
-          })
+          });
         }
       } catch (error) {
         console.error("Error processing message:", error);
@@ -104,13 +108,12 @@ wss.on('connection', async (ws, request) => {
     });
 
     // Handle disconnection
-    ws.on('close', () => {
-      const index = users.findIndex(u => u.ws === ws);
+    ws.on("close", () => {
+      const index = users.findIndex((u) => u.ws === ws);
       if (index !== -1) {
         users.splice(index, 1);
       }
     });
-
   } catch {
     ws.close();
   }

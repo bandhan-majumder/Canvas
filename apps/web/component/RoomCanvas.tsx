@@ -1,10 +1,10 @@
 "use client";
-import { WS_BACKEND_URL } from '@/config';
-import React, { useEffect, useRef, useState } from 'react'
-import Canvas from './Canvas';
-import Loader from './Loader';
+import { WS_BACKEND_URL } from "@/config";
+import React, { useEffect, useRef, useState } from "react";
+import Canvas from "./Canvas";
+import Loader from "./Loader";
 
-function RoomCanvas({ roomId, userId }: { roomId: string, userId: any }) {
+function RoomCanvas({ roomId, userId }: { roomId: string; userId: any }) {
   if (!roomId || !userId) {
     return null;
   }
@@ -22,10 +22,12 @@ function RoomCanvas({ roomId, userId }: { roomId: string, userId: any }) {
     ws.onopen = () => {
       if (ws.readyState === WebSocket.OPEN) {
         try {
-          ws.send(JSON.stringify({
-            type: "join_room",
-            roomId
-          }));
+          ws.send(
+            JSON.stringify({
+              type: "join_room",
+              roomId,
+            }),
+          );
         } catch (error) {
           console.error("Error sending message:", error);
         }
@@ -79,7 +81,9 @@ function RoomCanvas({ roomId, userId }: { roomId: string, userId: any }) {
       )}
 
       {(isConnecting || !socket) && (
-        <div className={`absolute inset-0 transition-opacity duration-300 ease-in-out ${socket ? 'opacity-0' : 'opacity-100'}`}>
+        <div
+          className={`absolute inset-0 transition-opacity duration-300 ease-in-out ${socket ? "opacity-0" : "opacity-100"}`}
+        >
           <Loader />
         </div>
       )}
@@ -87,4 +91,4 @@ function RoomCanvas({ roomId, userId }: { roomId: string, userId: any }) {
   );
 }
 
-export default RoomCanvas
+export default RoomCanvas;

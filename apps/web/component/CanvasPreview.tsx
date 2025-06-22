@@ -6,7 +6,9 @@ import { Card } from "@repo/ui";
 
 export const CanvasPreview = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [activeTool, setActiveTool] = useState<"circle" | "rectangle" | "others">("circle");
+  const [activeTool, setActiveTool] = useState<
+    "circle" | "rectangle" | "others"
+  >("circle");
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -84,8 +86,8 @@ export const CanvasPreview = () => {
             Pure Canvas Experience
           </h2>
           <p className="text-gray-400 text-xl font-light leading-relaxed max-w-2xl mx-auto">
-            Click to create. Watch others draw in real-time. 
-            Experience the elegance of minimal design.
+            Click to create. Watch others draw in real-time. Experience the
+            elegance of minimal design.
           </p>
         </div>
 
@@ -96,9 +98,10 @@ export const CanvasPreview = () => {
                 variant={activeTool === "circle" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setActiveTool("circle")}
-                className={activeTool === "circle" 
-                  ? "bg-white text-gray-900 hover:bg-gray-100 rounded-full px-6 shadow-lg" 
-                  : "text-gray-400 hover:text-white hover:bg-gray-700/50 rounded-full px-6"
+                className={
+                  activeTool === "circle"
+                    ? "bg-white text-gray-900 hover:bg-gray-100 rounded-full px-6 shadow-lg"
+                    : "text-gray-400 hover:text-white hover:bg-gray-700/50 rounded-full px-6"
                 }
               >
                 Circle
@@ -107,9 +110,10 @@ export const CanvasPreview = () => {
                 variant={activeTool === "rectangle" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setActiveTool("rectangle")}
-                className={activeTool === "rectangle" 
-                  ? "bg-white text-gray-900 hover:bg-gray-100 rounded-full px-6 shadow-lg" 
-                  : "text-gray-400 hover:text-white hover:bg-gray-700/50 rounded-full px-6"
+                className={
+                  activeTool === "rectangle"
+                    ? "bg-white text-gray-900 hover:bg-gray-100 rounded-full px-6 shadow-lg"
+                    : "text-gray-400 hover:text-white hover:bg-gray-700/50 rounded-full px-6"
                 }
               >
                 Rectangle
@@ -133,7 +137,8 @@ export const CanvasPreview = () => {
 
           <div className="px-8 pb-8">
             <p className="text-center text-sm text-gray-500 font-light">
-              Click anywhere to draw. In the real app, watch teammates create in real-time.
+              Click anywhere to draw. In the real app, watch teammates create in
+              real-time.
             </p>
           </div>
         </Card>

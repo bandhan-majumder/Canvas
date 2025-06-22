@@ -5,32 +5,32 @@ import { authOptions } from "@/lib/auth";
 import Room404 from "@/component/RoomNotFound";
 
 async function CanvasPage({ params }: { params: Promise<{ slug: string }> }) {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
-        throw new Error("User not authenticated");
+  const session = await getServerSession(authOptions);
+  if (!session?.user) {
+    throw new Error("User not authenticated");
+  }
+
+  const slug = (await params).slug;
+  if (!slug) {
+    throw new Error("Room slug is required");
+  }
+
+  try {
+    const roomInfo = await prismaClient.canvas.findFirst({
+      where: {
+        slug: slug,
+      },
+    });
+
+    if (!roomInfo) {
+      throw new Error("Room not found");
     }
 
-    const slug = (await params).slug;
-    if (!slug) {
-        throw new Error("Room slug is required");
-    }
-
-    try {
-        const roomInfo = await prismaClient.canvas.findFirst({
-            where: {
-                slug: slug
-            },
-        });
-
-        if(!roomInfo) {
-            throw new Error("Room not found");
-        }
-
-        // @ts-expect-error: roomInfo.id may not match expected type for RoomCanvas, but is valid here
-        return <RoomCanvas roomId={roomInfo.id.toString()} userId={session.id} />;
-    } catch {
-        return <Room404 />;
-    }
+    // @ts-expect-error: roomInfo.id may not match expected type for RoomCanvas, but is valid here
+    return <RoomCanvas roomId={roomInfo.id.toString()} userId={session.id} />;
+  } catch {
+    return <Room404 />;
+  }
 }
 
 export default CanvasPage;

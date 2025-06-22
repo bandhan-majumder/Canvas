@@ -12,12 +12,9 @@ export default withAuth(
     pages: {
       signIn: "/auth/signin",
     },
-  }
+  },
 );
 
 export const config = {
-  matcher: [
-    "/canvas",
-    "/canvas/:path*"
-  ],
+  matcher: ["/canvas", "/canvas/:path*"],
 };
