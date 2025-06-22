@@ -9,7 +9,7 @@ export const Hero = () => {
   return (
     <section className="pt-32 pb-20 px-4 bg-gray-900">
       <div className="container mx-auto text-center max-w-6xl">
-        <Badge variant="secondary" className="mb-6 bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-200 p-3 rounded-full">
+        <Badge variant="secondary" className="mb-6 bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-200 p-2 rounded-full">
           ✨ Simple collaborative drawing
         </Badge>
 
