@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthOptions } from "next-auth"
+import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prismaClient } from "@repo/db/client";
 import bcrypt from "bcrypt";
@@ -12,6 +12,7 @@ export const authOptions: NextAuthOptions = {
                 password: { label: "Password", type: "password", placeholder: "* * * * *" }
             },
             async authorize(credentials, req) {
+                req.body = JSON.parse(req.body as unknown as string);
                 if (!credentials?.email || !credentials?.password) {
                     throw new Error("Missing required fields");
                 }
@@ -48,7 +49,7 @@ export const authOptions: NextAuthOptions = {
     },
     callbacks: {
         async redirect({ url, baseUrl }) {
-            return baseUrl;
+            return url.startsWith(baseUrl) ? url : baseUrl;
         },
         async jwt({ token, user }) {
             // these id, email, and name already exist in the default token. For adding new properties, we can do the operations like below after defining type
@@ -62,9 +63,12 @@ export const authOptions: NextAuthOptions = {
         async session({ session, token }) {
             // Add custom properties to the session object if needed
             if (token) {
-                (session as any).id = token.id;
-                (session as any).email = token.email;
-                (session as any).name = token.name;
+                //@ts-expect-error: TypeScript may not recognize these properties on the session object
+                session.id = token.id;
+                //@ts-expect-error: TypeScript may not recognize these properties on the session object
+                session.email = token.email;
+                //@ts-expect-error: TypeScript may not recognize these properties on the session object
+                session.name = token.name;
             }
             return session;
         }

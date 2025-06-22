@@ -35,7 +35,7 @@ export async function POST(request: Request) {
         return NextResponse.json({
             slug: newRoom.slug,
         }, { status: 200 })
-    } catch (e: unknown) {
+    } catch {
         return NextResponse.json({
             message: "Room name already exists!"
         }, {
