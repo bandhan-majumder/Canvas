@@ -8,6 +8,7 @@ import { Tool } from '@/types/tools';
 import { Game } from '@/draw/Game';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
+import UserProfileDropDown from './UserProfileDropDown';
 
 
 function Canvas({ roomId, socket }: { roomId: string, socket: WebSocket }) {
@@ -58,10 +59,13 @@ function Canvas({ roomId, socket }: { roomId: string, socket: WebSocket }) {
                 <ToolsBar selectedTool={selectedTool} setSelectedTool={setSelectedTool} />
             </div>
             <div className='fixed top-4 right-10 flex gap-4'>
-                <button className='text-black p-2 rounded-lg text-sm bg-[#B2AEFF] cursor-pointer' onClick={onShareHandler}>Share</button>
-                <div className='bg-[#403E6A] p-2 rounded-xl text-white flex justify-center items-center cursor-pointer'>
+                <div className='bg-[#403E6A] p-4 rounded-xl text-white flex justify-center items-center cursor-pointer'>
                     <Link href={"https://github.com/bandhan-majumder/Canvas"} target='blank'>
-                    <Github className='transition ease-out duration-300'/></Link>
+                        <Github className='transition ease-out duration-300' /></Link>
+                </div>
+                <button className='text-black p-4 rounded-lg text-sm bg-[#B2AEFF] cursor-pointer' onClick={onShareHandler}>Share</button>
+                <div>
+                    <UserProfileDropDown />
                 </div>
             </div>
             <div className='fixed bottom-4 bg-none right-10'>

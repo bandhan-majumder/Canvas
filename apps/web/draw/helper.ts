@@ -38,3 +38,18 @@ export async function getRoomInfo(slug: string) {
     const data = await response.json();
     return data;
 }
+
+export async function getAllRoomInfo() {
+    const response = await fetch(`/api/room`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        },
+    });
+    if (!response.ok) {
+        throw new Error("Failed to fetch all room info");
+    }
+    const data = await response.json();
+    return data;
+}

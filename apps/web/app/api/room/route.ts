@@ -12,8 +12,10 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const roomSlug = searchParams.get("slug");
     
+    // If no slug is provided, return all room information
     if (!roomSlug) {
-        return NextResponse.json("Missing roomId", { status: 400 });
+        const allRoomInfo = await prismaClient.canvas.findMany();
+        return NextResponse.json(allRoomInfo, { status: 200 });
     }
 
     const roomInfo = await prismaClient.canvas.findFirst({
