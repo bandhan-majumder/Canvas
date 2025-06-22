@@ -64,18 +64,15 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.email = user.email;
-        token.name = user.name;
+        token.name = user.name!; // Ensure name is not null
       }
       return token;
     },
     async session({ session, token }) {
       // Add custom properties to the session object if needed
       if (token) {
-        //@ts-expect-error: TypeScript may not recognize these properties on the session object
         session.id = token.id;
-        //@ts-expect-error: TypeScript may not recognize these properties on the session object
         session.email = token.email;
-        //@ts-expect-error: TypeScript may not recognize these properties on the session object
         session.name = token.name;
       }
       return session;

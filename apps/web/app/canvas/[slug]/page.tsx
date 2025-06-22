@@ -26,7 +26,6 @@ async function CanvasPage({ params }: { params: Promise<{ slug: string }> }) {
       throw new Error("Room not found");
     }
 
-    // @ts-expect-error: roomInfo.id may not match expected type for RoomCanvas, but is valid here
     return <RoomCanvas roomId={roomInfo.id.toString()} userId={session.id} />;
   } catch {
     return <Room404 />;
