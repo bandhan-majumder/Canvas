@@ -20,7 +20,6 @@ function JoinCanvas() {
     const getAllRooms = async () => {
       try {
         const response = await getAllRoomInfo();
-        console.log("All room info: ", response);
         setCanvases(response || []);
       } catch (error) {
         console.error("Error fetching all rooms: ", error);

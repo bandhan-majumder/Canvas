@@ -2,7 +2,7 @@
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { signIn } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Mail, Lock, User } from "lucide-react";
 
@@ -18,11 +18,11 @@ export default function Authentication({ isSignIn }: { isSignIn: boolean }) {
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
-
+  const router = useRouter();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     if (isSignIn) {
       try {
-        const res = await signIn("credentials", {
+        await signIn("credentials", {
           email: data.email,
           password: data.password,
           redirect: true,
@@ -45,7 +45,7 @@ export default function Authentication({ isSignIn }: { isSignIn: boolean }) {
     });
     if (res.status === 201) {
       toast.success("User created successfully");
-      redirect("/auth/signin");
+      router.push("/auth/signin");
     } else if (res.status === 409) {
       toast.error("User already exists");
     } else if (res.status === 500) {

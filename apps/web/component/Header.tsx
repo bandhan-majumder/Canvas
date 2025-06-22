@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 export const Header = () => {
   const router = useRouter();
   const { data: session } = useSession();
-  console.log("Session Data:", session);
 
   if (session?.user) {
     router.push("/canvas");

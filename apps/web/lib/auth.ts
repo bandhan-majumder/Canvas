@@ -19,8 +19,7 @@ export const authOptions: NextAuthOptions = {
           placeholder: "* * * * *",
         },
       },
-      async authorize(credentials, req) {
-        req.body = JSON.parse(req.body as unknown as string);
+      async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Missing required fields");
         }
@@ -56,8 +55,8 @@ export const authOptions: NextAuthOptions = {
     signIn: "/auth/signin",
   },
   callbacks: {
-    async redirect({ url, baseUrl }) {
-      return url.startsWith(baseUrl) ? url : baseUrl;
+    async redirect({ baseUrl }) {
+      return baseUrl;
     },
     async jwt({ token, user }) {
       // these id, email, and name already exist in the default token. For adding new properties, we can do the operations like below after defining type
