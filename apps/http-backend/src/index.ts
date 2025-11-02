@@ -1,13 +1,13 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "@repo/backend-common/config";
 import { middleware } from "./middleware";
 import {
   CreateUserSchema,
   SiginSchema,
   CreateRoomSchema,
 } from "@repo/common/types";
+import { JWT_SECRET } from "@repo/common/config";
 import { prismaClient } from "@repo/db/client";
 
 const port = process.env.PORT || "8080";
@@ -100,7 +100,7 @@ app.post("/signin", async (req: Request, res: Response) => {
     return;
   }
 
-  const token = jwt.sign({ userId: isExistingUser.id }, JWT_SECRET);
+  const token = jwt.sign({ userId: isExistingUser.id }, JWT_SECRET!!);
 
   res.json({
     success: true,

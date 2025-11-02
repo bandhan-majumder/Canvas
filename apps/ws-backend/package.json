@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npm run build && npm run start",
+    "dev": "pnpm build && pnpm start",
     "build": "tsc -b",
     "start": "node dist/index.js"
   },
@@ -17,10 +17,9 @@
     "ws": "^8.18.1"
   },
   "devDependencies": {
-    "@repo/typescript-config": "*",
+    "@repo/typescript-config": "workspace:*",
     "@types/ws": "^8.18.1",
-    "@repo/backend-common": "*",
-    "@repo/common": "*",
-    "@repo/db": "*"
+    "@repo/common": "workspace:*",
+    "@repo/db": "workspace:*"
   }
 }
