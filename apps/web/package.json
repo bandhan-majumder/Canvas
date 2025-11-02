@@ -14,13 +14,16 @@
     "@prisma/nextjs-monorepo-workaround-plugin": "^6.10.1",
     "axios": "^1.9.0",
     "bcrypt": "^5.1.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "lucide-react": "^0.503.0",
     "next": "15.3.0",
     "next-auth": "^4.24.11",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.56.3",
-    "react-hot-toast": "^2.5.2"
+    "react-hot-toast": "^2.5.2",
+    "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -34,6 +37,7 @@
     "eslint": "^9.26.0",
     "eslint-config-next": "15.3.1",
     "tailwindcss": "^4",
+    "tw-animate-css": "^1.3.4",
     "typescript": "5.8.2"
   }
 }
