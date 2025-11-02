@@ -1,5 +1,4 @@
 import { WebSocketServer, WebSocket } from "ws";
-import { prismaClient } from "@repo/db/client";
 
 const port = process.env.PORT || "8081";
 const wss = new WebSocketServer({ port: Number(port) });
@@ -81,13 +80,13 @@ wss.on("connection", async (ws, request) => {
           // add in queue first and then store to db asyncronously
 
           // add the data to database using a pipeline
-          await prismaClient.shape.create({
-            data: {
-              object,
-              canvasId: roomId,
-              userId,
-            },
-          });
+          // await prismaClient.shape.create({
+          //   data: {
+          //     object,
+          //     canvasId: roomId,
+          //     userId,
+          //   },
+          // });
 
           // Broadcast message to all users in the room except the sender
           users.forEach((u) => {

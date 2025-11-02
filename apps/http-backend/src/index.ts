@@ -8,7 +8,6 @@ import {
   CreateRoomSchema,
 } from "@repo/common/types";
 import { JWT_SECRET } from "@repo/common/config";
-import { prismaClient } from "@repo/db/client";
 
 const port = process.env.PORT || "8080";
 const app = express();
@@ -32,34 +31,34 @@ app.post("/signup", async (req: Request, res: Response) => {
 
   const { email, password, name } = req.body;
 
-  const isExistingUser = await prismaClient.user.findFirst({
-    where: {
-      email,
-    },
-  });
+  // const isExistingUser = await prismaClient.user.findFirst({
+  //   where: {
+  //     email,
+  //   },
+  // });
 
   // if user already exists
-  if (isExistingUser) {
-    res.json({
-      success: false,
-      message: "User already exists!",
-    });
-    return;
-  }
+  // if (isExistingUser) {
+  //   res.json({
+  //     success: false,
+  //     message: "User already exists!",
+  //   });
+  //   return;
+  // }
 
   // save the entry
-  const newUser = await prismaClient.user.create({
-    data: {
-      email,
-      password,
-      name,
-    },
-  });
+  // const newUser = await prismaClient.user.create({
+  //   data: {
+  //     email,
+  //     password,
+  //     name,
+  //   },
+  // });
 
   res.json({
     success: true,
     message: "Signed up successfully",
-    id: newUser.id,
+    // id: newUser.id,
   });
 });
 
@@ -76,37 +75,37 @@ app.post("/signin", async (req: Request, res: Response) => {
 
   const { email, password } = req.body;
 
-  const isExistingUser = await prismaClient.user.findFirst({
-    where: {
-      email,
-    },
-  });
+  // const isExistingUser = await prismaClient.user.findFirst({
+  //   where: {
+  //     email,
+  //   },
+  // });
 
-  if (!isExistingUser) {
-    res.json({
-      success: false,
-      message: "User does not exists!",
-    });
-    return;
-  }
+  // if (!isExistingUser) {
+  //   res.json({
+  //     success: false,
+  //     message: "User does not exists!",
+  //   });
+  //   return;
+  // }
 
   // TODO: hash it back
 
-  if (isExistingUser.password !== password) {
-    res.json({
-      success: false,
-      password: "Invalid input fields",
-    });
-    return;
-  }
+  // if (isExistingUser.password !== password) {
+  //   res.json({
+  //     success: false,
+  //     password: "Invalid input fields",
+  //   });
+  //   return;
+  // }
 
-  const token = jwt.sign({ userId: isExistingUser.id }, JWT_SECRET!!);
+  // const token = jwt.sign({ userId: isExistingUser.id }, JWT_SECRET!!);
 
-  res.json({
-    success: true,
-    message: "Signed in successfully",
-    token,
-  });
+  // res.json({
+  //   success: true,
+  //   message: "Signed in successfully",
+  //   token,
+  // });
 });
 
 app.post("/create-room", middleware, async (req: Request, res: Response) => {
@@ -127,35 +126,35 @@ app.post("/create-room", middleware, async (req: Request, res: Response) => {
   const userId = req.userId;
 
   // check if user exists
-  const isExistingUser = await prismaClient.user.findFirst({
-    where: {
-      id: userId,
-    },
-  });
+  // const isExistingUser = await prismaClient.user.findFirst({
+  //   where: {
+  //     id: userId,
+  //   },
+  // });
 
-  if (!isExistingUser) {
-    res.json({
-      success: false,
-      message: "Invalid user",
-    });
-  }
+  // if (!isExistingUser) {
+  //   res.json({
+  //     success: false,
+  //     message: "Invalid user",
+  //   });
+  // }
 
   // create a random hash slug
   const slug = name;
 
   try {
     // create a new room
-    const newRoom = await prismaClient.canvas.create({
-      data: {
-        slug,
-        userId,
-      },
-    });
+    // const newRoom = await prismaClient.canvas.create({
+    //   data: {
+    //     slug,
+    //     userId,
+    //   },
+    // });
 
     res.json({
       success: true,
       message: "Room created successfully",
-      roomId: newRoom.id,
+      // roomId: newRoom.id,
     });
   } catch (e: unknown) {
     console.error(e);
@@ -170,34 +169,34 @@ app.get("/chats/:roomId", async (req, res) => {
   const roomId = req.params.roomId;
 
   // check if the room exists
-  const isExistingRoom = await prismaClient.canvas.findFirst({
-    where: {
-      id: roomId,
-    },
-  });
+  // const isExistingRoom = await prismaClient.canvas.findFirst({
+  //   where: {
+  //     id: roomId,
+  //   },
+  // });
 
-  if (!isExistingRoom) {
-    res.json({
-      success: false,
-      message: "Room does not exist",
-    });
-  }
+  // if (!isExistingRoom) {
+  //   res.json({
+  //     success: false,
+  //     message: "Room does not exist",
+  //   });
+  // }
 
-  // retrieve first 50 messages
-  const first50Chats = await prismaClient.shape.findMany({
-    where: {
-      canvasId: roomId,
-    },
-    orderBy: {
-      id: "desc",
-    },
-    take: 50,
-  });
+  // // retrieve first 50 messages
+  // const first50Chats = await prismaClient.shape.findMany({
+  //   where: {
+  //     canvasId: roomId,
+  //   },
+  //   orderBy: {
+  //     id: "desc",
+  //   },
+  //   take: 50,
+  // });
 
   res.json({
     success: true,
     message: "Chats retreived successfully",
-    chats: first50Chats,
+    // chats: first50Chats,
   });
 });
 
@@ -205,23 +204,23 @@ app.get("/room/:slug", async (req, res) => {
   const slug = req.params.slug.toString();
 
   // check if the room exists
-  const isExistingRoom = await prismaClient.canvas.findFirst({
-    where: {
-      slug,
-    },
-  });
+  // const isExistingRoom = await prismaClient.canvas.findFirst({
+  //   where: {
+  //     slug,
+  //   },
+  // });
 
-  if (!isExistingRoom) {
-    res.json({
-      success: false,
-      message: "Room does not exist",
-    });
-  }
+  // if (!isExistingRoom) {
+  //   res.json({
+  //     success: false,
+  //     message: "Room does not exist",
+  //   });
+  // }
 
   res.json({
     success: true,
     message: "Room info retreived successfully",
-    room: isExistingRoom,
+    // room: isExistingRoom,
   });
 });
 app.listen(port, () => {

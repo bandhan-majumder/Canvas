@@ -17,7 +17,6 @@ import { Tool } from "@/types/tools";
 import { Game } from "@/draw/Game";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import UserProfileDropDown from "./UserProfileDropDown";
 
 function Canvas({ roomId, socket }: { roomId: string; socket: WebSocket }) {
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
@@ -119,7 +118,6 @@ function Canvas({ roomId, socket }: { roomId: string; socket: WebSocket }) {
               >
                 <Share2 size={20} />
               </button>
-              <UserProfileDropDown />
             </div>
           </div>
 
@@ -169,7 +167,6 @@ function Canvas({ roomId, socket }: { roomId: string; socket: WebSocket }) {
               Share
             </button>
             <div>
-              <UserProfileDropDown />
             </div>
           </div>
           <div className="fixed bottom-4 bg-none right-10">
