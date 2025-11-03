@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 function Room404() {
@@ -8,12 +9,7 @@ function Room404() {
       <p className="text-lg mb-8 text-white">
         Oops! The room you are looking for does not exist or has been removed.
       </p>
-      <a
-        href="/"
-        className="px-6 py-3 bg-[#B2AEFF] text-white rounded-lg font-semibold shadow-md hover:bg-[#B2AEFF1] transition"
-      >
-        Go Home
-      </a>
+      <Link href={"/"} className="px-6 py-3 bg-[#B2AEFF] text-white rounded-lg font-semibold shadow-md hover:bg-[#B2AEFF1] transition" title="Go Home" />
     </div>
   );
 }

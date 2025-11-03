@@ -28,7 +28,9 @@ function Canvas() {
   const isMobile = width < 768;
 
   useEffect(() => {
-    selectedTool && game?.setTool(selectedTool);
+    if (selectedTool && game) {
+      game.setTool(selectedTool);
+    }
   }, [selectedTool, game]);
 
   useEffect(() => {
@@ -84,7 +86,7 @@ function Canvas() {
 
     document.addEventListener('touchstart', preventZoom, { passive: false });
     document.addEventListener('touchmove', preventZoom, { passive: false });
-    
+
     return () => {
       document.removeEventListener('touchstart', preventZoom);
       document.removeEventListener('touchmove', preventZoom);
@@ -93,14 +95,14 @@ function Canvas() {
 
   return (
     <div className="h-[100vh] overflow-hidden relative">
-      <canvas 
-        ref={canvasRef} 
-        width={width} 
+      <canvas
+        ref={canvasRef}
+        width={width}
         height={height}
         className="touch-none"
         style={{ touchAction: 'none' }}
       />
-      
+
       {isMobile ? (
         <>
           <div className="fixed top-0 left-0 right-0 bg-[#232329] p-3 flex justify-between items-center z-50 safe-area-top">
@@ -110,7 +112,7 @@ function Canvas() {
             >
               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
-            
+
             <div className="flex gap-2">
               <button
                 className="p-2 text-white rounded-lg bg-[#403E6A]"
@@ -121,9 +123,8 @@ function Canvas() {
             </div>
           </div>
 
-          <div className={`fixed top-16 left-0 right-0 bg-[#232329] transition-transform duration-300 z-40 ${
-            isMobileMenuOpen ? 'translate-y-0' : '-translate-y-full'
-          }`}>
+          <div className={`fixed top-16 left-0 right-0 bg-[#232329] transition-transform duration-300 z-40 ${isMobileMenuOpen ? 'translate-y-0' : '-translate-y-full'
+            }`}>
             <div className="p-4">
               <MobileToolsBar
                 selectedTool={selectedTool}
@@ -137,7 +138,7 @@ function Canvas() {
           </div>
 
           {isMobileMenuOpen && (
-            <div 
+            <div
               className="fixed inset-0 bg-black bg-opacity-50 z-30"
               onClick={() => setIsMobileMenuOpen(false)}
             />
@@ -256,11 +257,10 @@ function MobileToolButton({
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col items-center justify-center p-4 rounded-lg transition-colors ${
-        activated 
-          ? 'bg-[#B2AEFF] text-black' 
+      className={`flex flex-col items-center justify-center p-4 rounded-lg transition-colors ${activated
+          ? 'bg-[#B2AEFF] text-black'
           : 'bg-[#403E6A] text-white hover:bg-[#4A4870]'
-      }`}
+        }`}
     >
       {icon}
       <span className="text-xs mt-1 font-medium">{label}</span>

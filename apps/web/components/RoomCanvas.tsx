@@ -1,8 +1,6 @@
 "use client";
-import { WS_BACKEND_URL } from "@/config";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import Canvas from "./Canvas";
-import Loader from "./Loader";
 
 function RoomCanvas() {
   
