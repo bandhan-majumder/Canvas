@@ -25,7 +25,7 @@ function Canvas() {
   const [game, setGame] = useState<Game>();
   const { width, height } = useWindowSize();
 
-  const isMobile = width < 768;
+  // const isMobile = width < 768;
 
   useEffect(() => {
     if (selectedTool && game) {
@@ -57,11 +57,11 @@ function Canvas() {
   }, [width, height, game]);
 
   // Close mobile menu when tool is selected
-  useEffect(() => {
-    if (selectedTool && isMobile) {
-      setIsMobileMenuOpen(false);
-    }
-  }, [selectedTool, isMobile]);
+  // useEffect(() => {
+  //   if (selectedTool && isMobile) {
+  //     setIsMobileMenuOpen(false);
+  //   }
+  // }, [selectedTool, isMobile]);
 
   function onShareHandler(): void {
     const currentLink = location.href;
@@ -103,7 +103,36 @@ function Canvas() {
         style={{ touchAction: 'none' }}
       />
 
-      {isMobile ? (
+      <div className="fixed top-4 left-10">
+        <ToolsBar
+          selectedTool={selectedTool}
+          setSelectedTool={setSelectedTool}
+        />
+      </div>
+      <div className="fixed top-4 right-10 flex gap-4">
+        <div className="bg-[#403E6A] p-4 rounded-xl text-white flex justify-center items-center cursor-pointer">
+          <Link
+            href={"https://github.com/bandhan-majumder/Canvas"}
+            target="blank"
+          >
+            <Github className="transition ease-out duration-300" />
+          </Link>
+        </div>
+        <button
+          className="text-black p-4 rounded-lg text-sm bg-[#B2AEFF] cursor-pointer"
+          onClick={onShareHandler}
+        >
+          Share
+        </button>
+        <div>
+        </div>
+      </div>
+      <div className="fixed bottom-4 bg-none right-10">
+        {game && <ZoomBar game={game} />}
+      </div>
+
+
+      {/* {isMobile ? (
         <>
           <div className="fixed top-0 left-0 right-0 bg-[#232329] p-3 flex justify-between items-center z-50 safe-area-top">
             <button
@@ -174,7 +203,7 @@ function Canvas() {
             {game && <ZoomBar game={game} />}
           </div>
         </>
-      )}
+      )} */}
     </div>
   );
 }
@@ -258,8 +287,8 @@ function MobileToolButton({
     <button
       onClick={onClick}
       className={`flex flex-col items-center justify-center p-4 rounded-lg transition-colors ${activated
-          ? 'bg-[#B2AEFF] text-black'
-          : 'bg-[#403E6A] text-white hover:bg-[#4A4870]'
+        ? 'bg-[#B2AEFF] text-black'
+        : 'bg-[#403E6A] text-white hover:bg-[#4A4870]'
         }`}
     >
       {icon}
