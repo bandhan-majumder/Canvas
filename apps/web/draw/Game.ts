@@ -16,6 +16,8 @@ export class Game {
   private selectedTool: Tool | undefined; // by default, select square
   private maxZoomout = 0.26214400000000015;
   private maxZoomin = 3.814697265625;
+  private offsetX: number = 0; 
+  private offsetY: number = 0;
 
   constructor(canvas: HTMLCanvasElement) {
     // roomId: string, socket: WebSocket
@@ -36,6 +38,12 @@ export class Game {
 
   async init() {
     // this.existingShapes = await getExistingShape(this.roomId);
+    this.clearAndRenderCanvas();
+  }
+
+  panCamera(deltaX: number, deltaY: number): void {
+    this.offsetX -= deltaX;
+    this.offsetY -= deltaY;
     this.clearAndRenderCanvas();
   }
 
@@ -61,6 +69,7 @@ export class Game {
     this.ctx.translate(centerX, centerY);
     this.ctx.scale(this.scale, this.scale);
     this.ctx.translate(-centerX, -centerY);
+    this.ctx.translate(this.offsetX, this.offsetY);
 
     // Draw shapes
     this.ctx.strokeStyle = "rgba(255, 255, 255)";
@@ -118,9 +127,9 @@ export class Game {
     const centerX = this.canvas.width / 2;
     const centerY = this.canvas.height / 2;
 
-    // Reverse the transformation
-    const worldX = (canvasX - centerX) / this.scale + centerX;
-    const worldY = (canvasY - centerY) / this.scale + centerY;
+    // Reverse the transformation (including pan offset)
+    const worldX = ((canvasX - centerX) / this.scale + centerX - this.offsetX);
+    const worldY = ((canvasY - centerY) / this.scale + centerY - this.offsetY);
 
     return { x: worldX, y: worldY };
   }
@@ -234,6 +243,9 @@ export class Game {
       this.ctx.translate(centerX, centerY);
       this.ctx.scale(this.scale, this.scale);
       this.ctx.translate(-centerX, -centerY);
+
+      // Apply pan offset
+      this.ctx.translate(this.offsetX, this.offsetY);
 
       this.ctx.strokeStyle = "rgba(255, 255, 255)";
 

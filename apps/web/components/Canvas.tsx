@@ -90,8 +90,41 @@ function Canvas() {
     };
   }, []);
 
+  // Add mouse wheel scrolling
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !game) return;
+
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+
+      let deltaX = 0;
+      let deltaY = 0;
+
+      // Check if shift key is pressed for horizontal scrolling
+      if (event.shiftKey) {
+        // Shift + wheel = horizontal scroll
+        deltaX = event.deltaY;
+      } else {
+        // Normal wheel = vertical scroll
+        deltaY = event.deltaY;
+      }
+
+      // Pan the canvas based on wheel movement
+      if (game.panCamera) {
+        game.panCamera(deltaX, deltaY);
+      }
+    };
+
+    canvas.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      canvas.removeEventListener('wheel', handleWheel);
+    };
+  }, [game]);
+
   return (
-    <div className="h-[100vh] overflow-hidden relative">
+    <div className="h-full w-full relative">
       <canvas
         ref={canvasRef}
         width={width}
@@ -100,7 +133,7 @@ function Canvas() {
         style={{ touchAction: 'none' }}
       />
 
-      <div className="fixed top-4 left-10">
+      <div className="fixed top-4 left-5/12">
         <ToolsBar
           selectedTool={selectedTool}
           setSelectedTool={setSelectedTool}
@@ -208,7 +241,7 @@ function ToolsBar({
   setSelectedTool: (tool: Tool) => void;
 }) {
   return (
-    <div className="bg-[#232329] p-2 rounded-md shadow-md">
+    <div className="bg-[#232329] p-2 rounded-xl shadow-md">
       <div className="flex gap-2">
         <IconButton
           icon={<Minus />}

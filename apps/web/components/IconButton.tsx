@@ -4,7 +4,7 @@ export function IconButton({
   icon,
   onClick,
   activated,
-  isBorder = true,
+  isBorder = false,
 }: {
   icon: React.ReactNode;
   onClick: () => void;
@@ -13,7 +13,7 @@ export function IconButton({
 }) {
   return (
     <div
-      className={`cursor-pointer rounded-full ${isBorder ? "border" : ""} p-2 transform hover:scale-125 ${activated ? "text-red-400" : "text-white"}`}
+      className={`cursor-pointer rounded-lg ${isBorder ? "border" : ""} p-2 transform hover:scale-125 ${activated ? "bg-[#403E6A] text-[#E0DFFF]" : "text-white"}`}
       onClick={onClick}
     >
       {icon}
