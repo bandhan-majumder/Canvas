@@ -8,19 +8,16 @@ import {
   Github,
   Minus,
   Plus,
-  Square,
-  Share2,
-  Menu,
-  X,
+  Square
 } from "lucide-react";
 import { Tool } from "@/types/tools";
 import { Game } from "@/draw/Game";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { Button } from "./ui/button";
 
 function Canvas() {
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game>();
   const { width, height } = useWindowSize();
@@ -110,20 +107,14 @@ function Canvas() {
         />
       </div>
       <div className="fixed top-4 right-10 flex gap-4">
-        <div className="bg-[#403E6A] p-4 rounded-xl text-white flex justify-center items-center cursor-pointer">
-          <Link
-            href={"https://github.com/bandhan-majumder/Canvas"}
-            target="blank"
-          >
-            <Github className="transition ease-out duration-300" />
+        <Button className="bg-white" variant={"link"}>
+          <Link href={"https://github.com/bandhan-majumder/Canvas"} target="blank">
+            <Github />
           </Link>
-        </div>
-        <button
-          className="text-black p-4 rounded-lg text-sm bg-[#B2AEFF] cursor-pointer"
-          onClick={onShareHandler}
-        >
+        </Button>
+        <Button variant={"outline"} onClick={onShareHandler}>
           Share
-        </button>
+        </Button>
         <div>
         </div>
       </div>
@@ -240,62 +231,62 @@ function ToolsBar({
 }
 
 // Mobile Tools Bar - Horizontal layout
-function MobileToolsBar({
-  selectedTool,
-  setSelectedTool,
-}: {
-  selectedTool: Tool | null;
-  setSelectedTool: (tool: Tool) => void;
-}) {
-  return (
-    <div className="grid grid-cols-3 gap-3">
-      <MobileToolButton
-        icon={<Minus size={24} />}
-        label="Line"
-        onClick={() => setSelectedTool(Tool.Line)}
-        activated={selectedTool === Tool.Line}
-      />
-      <MobileToolButton
-        icon={<Square size={24} />}
-        label="Square"
-        onClick={() => setSelectedTool(Tool.Square)}
-        activated={selectedTool === Tool.Square}
-      />
-      <MobileToolButton
-        icon={<Circle size={24} />}
-        label="Circle"
-        onClick={() => setSelectedTool(Tool.Circle)}
-        activated={selectedTool === Tool.Circle}
-      />
-    </div>
-  );
-}
+// function MobileToolsBar({
+//   selectedTool,
+//   setSelectedTool,
+// }: {
+//   selectedTool: Tool | null;
+//   setSelectedTool: (tool: Tool) => void;
+// }) {
+//   return (
+//     <div className="grid grid-cols-3 gap-3">
+//       <MobileToolButton
+//         icon={<Minus size={24} />}
+//         label="Line"
+//         onClick={() => setSelectedTool(Tool.Line)}
+//         activated={selectedTool === Tool.Line}
+//       />
+//       <MobileToolButton
+//         icon={<Square size={24} />}
+//         label="Square"
+//         onClick={() => setSelectedTool(Tool.Square)}
+//         activated={selectedTool === Tool.Square}
+//       />
+//       <MobileToolButton
+//         icon={<Circle size={24} />}
+//         label="Circle"
+//         onClick={() => setSelectedTool(Tool.Circle)}
+//         activated={selectedTool === Tool.Circle}
+//       />
+//     </div>
+//   );
+// }
 
 // Mobile Tool Button with label
-function MobileToolButton({
-  icon,
-  label,
-  onClick,
-  activated = false,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  onClick: () => void;
-  activated?: boolean;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex flex-col items-center justify-center p-4 rounded-lg transition-colors ${activated
-        ? 'bg-[#B2AEFF] text-black'
-        : 'bg-[#403E6A] text-white hover:bg-[#4A4870]'
-        }`}
-    >
-      {icon}
-      <span className="text-xs mt-1 font-medium">{label}</span>
-    </button>
-  );
-}
+// function MobileToolButton({
+//   icon,
+//   label,
+//   onClick,
+//   activated = false,
+// }: {
+//   icon: React.ReactNode;
+//   label: string;
+//   onClick: () => void;
+//   activated?: boolean;
+// }) {
+//   return (
+//     <button
+//       onClick={onClick}
+//       className={`flex flex-col items-center justify-center p-4 rounded-lg transition-colors ${activated
+//         ? 'bg-[#B2AEFF] text-black'
+//         : 'bg-[#403E6A] text-white hover:bg-[#4A4870]'
+//         }`}
+//     >
+//       {icon}
+//       <span className="text-xs mt-1 font-medium">{label}</span>
+//     </button>
+//   );
+// }
 
 // Desktop Zoom Bar
 function ZoomBar({ game }: { game: Game }) {
@@ -320,25 +311,25 @@ function ZoomBar({ game }: { game: Game }) {
 }
 
 // Mobile Zoom Bar - Vertical layout
-function MobileZoomBar({ game }: { game: Game }) {
-  return (
-    <div className="bg-[#232329] rounded-lg shadow-md">
-      <div className="flex flex-col gap-1 p-2">
-        <button
-          onClick={() => game.zoomInHandler()}
-          className="p-3 text-white hover:bg-[#403E6A] rounded-lg transition-colors"
-        >
-          <Plus size={20} />
-        </button>
-        <button
-          onClick={() => game.zoomOutHandler()}
-          className="p-3 text-white hover:bg-[#403E6A] rounded-lg transition-colors"
-        >
-          <Minus size={20} />
-        </button>
-      </div>
-    </div>
-  );
-}
+// function MobileZoomBar({ game }: { game: Game }) {
+//   return (
+//     <div className="bg-[#232329] rounded-lg shadow-md">
+//       <div className="flex flex-col gap-1 p-2">
+//         <button
+//           onClick={() => game.zoomInHandler()}
+//           className="p-3 text-white hover:bg-[#403E6A] rounded-lg transition-colors"
+//         >
+//           <Plus size={20} />
+//         </button>
+//         <button
+//           onClick={() => game.zoomOutHandler()}
+//           className="p-3 text-white hover:bg-[#403E6A] rounded-lg transition-colors"
+//         >
+//           <Minus size={20} />
+//         </button>
+//       </div>
+//     </div>
+//   );
+// }
 
 export default Canvas;
