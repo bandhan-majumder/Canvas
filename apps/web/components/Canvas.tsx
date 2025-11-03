@@ -18,7 +18,7 @@ import { Game } from "@/draw/Game";
 import toast from "react-hot-toast";
 import Link from "next/link";
 
-function Canvas({ roomId, socket }: { roomId: string; socket: WebSocket }) {
+function Canvas() {
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -34,7 +34,7 @@ function Canvas({ roomId, socket }: { roomId: string; socket: WebSocket }) {
   useEffect(() => {
     // create a new game loop
     if (canvasRef.current) {
-      const g = new Game(canvasRef.current, roomId, socket);
+      const g = new Game(canvasRef.current);
       setGame(g);
       return () => {
         g.destroy();

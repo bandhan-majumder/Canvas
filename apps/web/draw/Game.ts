@@ -6,8 +6,8 @@ export class Game {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
   private existingShapes: Shape[];
-  private roomId: string;
-  private socket: WebSocket;
+  // private roomId: string;
+  // private socket: WebSocket;
   private clicked: boolean;
   private startX: number = 0;
   private startY: number = 0;
@@ -17,12 +17,13 @@ export class Game {
   private maxZoomout = 0.26214400000000015;
   private maxZoomin = 3.814697265625;
 
-  constructor(canvas: HTMLCanvasElement, roomId: string, socket: WebSocket) {
+  constructor(canvas: HTMLCanvasElement) {
+    // roomId: string, socket: WebSocket
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d")!;
     this.existingShapes = [];
-    this.roomId = roomId;
-    this.socket = socket;
+    // this.roomId = roomId;
+    // this.socket = socket;
     this.clicked = false;
     this.init();
     this.initHandlers();
@@ -34,7 +35,7 @@ export class Game {
   }
 
   async init() {
-    this.existingShapes = await getExistingShape(this.roomId);
+    // this.existingShapes = await getExistingShape(this.roomId);
     this.clearAndRenderCanvas();
   }
 
@@ -92,15 +93,15 @@ export class Game {
   }
 
   initHandlers() {
-    this.socket.onmessage = (event) => {
-      const parsedData = JSON.parse(event.data);
+    // this.socket.onmessage = (event) => {
+    //   const parsedData = JSON.parse(event.data);
 
-      if (parsedData.type === "chat") {
-        const parsedShape = JSON.parse(parsedData.object);
-        this.existingShapes.push(parsedShape);
-        this.clearAndRenderCanvas();
-      }
-    };
+    //   if (parsedData.type === "chat") {
+    //     const parsedShape = JSON.parse(parsedData.object);
+    //     this.existingShapes.push(parsedShape);
+    //     this.clearAndRenderCanvas();
+    //   }
+    // };
   }
 
   destroy() {
@@ -193,15 +194,15 @@ export class Game {
     this.existingShapes.push(shape);
 
     // Also send it to the backend when the mouse ups
-    this.socket.send(
-      JSON.stringify({
-        type: "chat",
-        roomId: this.roomId,
-        object: JSON.stringify({
-          ...shape,
-        }),
-      }),
-    );
+    // this.socket.send(
+    //   JSON.stringify({
+    //     type: "chat",
+    //     roomId: this.roomId,
+    //     object: JSON.stringify({
+    //       ...shape,
+    //     }),
+    //   }),
+    // );
 
     this.clearAndRenderCanvas();
   };
