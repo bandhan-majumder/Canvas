@@ -8,11 +8,17 @@ export const localStorageElementsAtom = atomWithStorage<CanvasElement[]>(
   [] // default value
 );
 
+// support for both single shape and multiple shapes
 export const addShapeAtom = atom(
   null, // no read
-  (get, set, newShape: CanvasElement) => {
+  (get, set, newShapes: CanvasElement | CanvasElement[]) => {
     const currentShapes = get(localStorageElementsAtom);
-    set(localStorageElementsAtom, [...currentShapes, newShape]);
+    if (Array.isArray(newShapes)) {
+      set(localStorageElementsAtom, [...newShapes]); // [...currentShapes, ...newShapes] will make things duplicate
+      return;
+    } else {
+      set(localStorageElementsAtom, [...currentShapes, newShapes]);
+    }
   }
 );
 

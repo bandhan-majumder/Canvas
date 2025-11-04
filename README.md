@@ -10,21 +10,14 @@ cd Canvas
 npm install 
 ```
 
-- Copy the .env.sample files and setup the db url and password 
+Copy the .env.sample files and setup the db url and password 
 
 ```
 cp apps/web/.env.sample apps/web/.env
 cp packages/db/.env.sample packages/db/.env
 ```
 
-- Migrate the database (first time only) and generate the client
-
-```
-cd packages/db && npx prisma migrate dev
-npx prisma generate
-```
-
-- go to the root directory and run
+go to the root directory and run
 
 ```
 cd ../..

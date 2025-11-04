@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { useSetAtom } from "jotai"
 
-export function DeleteCanvasElements() {
+export function DeleteElementsModal() {
   const clearAllShapes = useSetAtom(clearShapesAtom)
   return (
     <Dialog>

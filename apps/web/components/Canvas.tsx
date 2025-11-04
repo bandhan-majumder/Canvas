@@ -5,7 +5,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Github } from "lucide-react";
 import { Tool } from "@/types/tools";
 import { Game } from "@/draw/Game";
-// import toast from "react-hot-toast";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { ToolsBar } from "./ToolBar";
@@ -13,9 +12,12 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { localStorageElementsAtom, addShapeAtom } from "@/appState";
 import { CanvasElement } from "@/types/shape";
 import { STORAGE_KEYS } from "@/lib/constants";
-import { DeleteCanvasElements } from "./DeleteConfirmation";
+import { DeleteElementsModal } from "./DeleteElementsModal";
+import { ShareSessionModal } from "./ShareSessionModal";
 
-function Canvas() {
+function Canvas({ prevElements }: {
+  prevElements?: CanvasElement[]
+}) {
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game>();
@@ -24,6 +26,13 @@ function Canvas() {
   // Read shapes from localStorage via Jotai
   const shapes = useAtomValue(localStorageElementsAtom);
   const addShape = useSetAtom(addShapeAtom);
+
+  // if drawing exist in a new room, add that to the current state
+  useEffect(() => {
+    if (prevElements && prevElements.length > 0) {
+      addShape(prevElements);
+    }
+  }, [prevElements]);
 
   // Jotai state persists even if localStorage is manually cleared
   useEffect(() => {
@@ -84,12 +93,6 @@ function Canvas() {
     }
   }, [width, height, game]);
 
-  // function onShareHandler(): void {
-  //   const currentLink = location.href;
-  //   navigator.clipboard.writeText(currentLink);
-  //   toast.success("URL copied!");
-  // }
-
   // disable context menu
   useEffect(() => {
     const preventContextMenu = (event: Event) => event.preventDefault();
@@ -97,22 +100,6 @@ function Canvas() {
     return () => document.removeEventListener("contextmenu", preventContextMenu);
   }, []);
 
-  // // Prevent zoom on double tap for iOS
-  // useEffect(() => {
-  //   const preventZoom = (event: TouchEvent) => {
-  //     if (event.touches.length > 1) {
-  //       event.preventDefault();
-  //     }
-  //   };
-
-  //   document.addEventListener("touchstart", preventZoom, { passive: false });
-  //   document.addEventListener("touchmove", preventZoom, { passive: false });
-
-  //   return () => {
-  //     document.removeEventListener("touchstart", preventZoom);
-  //     document.removeEventListener("touchmove", preventZoom);
-  //   };
-  // }, []);
 
   // Add mouse wheel scrolling
   useEffect(() => {
@@ -181,10 +168,8 @@ function Canvas() {
             <Github />
           </Button>
         </Link>
-        {/* <Button variant={"outline"} onClick={onShareHandler}>
-          Share
-        </Button> */}
-        <DeleteCanvasElements />
+        <ShareSessionModal />
+        <DeleteElementsModal />
       </div>
     </div>
   );
