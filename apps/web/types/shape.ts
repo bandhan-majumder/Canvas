@@ -1,4 +1,4 @@
-export type Shape =
+export type CanvasElement =
   | {
       type: "rect";
       x: number;

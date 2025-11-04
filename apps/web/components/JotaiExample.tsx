@@ -1,6 +1,6 @@
-import { useAtom } from 'jotai'
+// import { useAtom } from 'jotai'
 
-import { animeAtom } from '@/appState'
+// import { animeAtom } from '@/appState'
 
 
 // READ - WRITE form same component

@@ -1,11 +1,11 @@
-import { Shape } from "@/types/shape";
+import { CanvasElement } from "@/types/shape";
 import { getExistingShape } from "./helper";
 import { Tool } from "@/types/tools";
 
 export class Game {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
-  private existingShapes: Shape[];
+  private existingShapes: CanvasElement[];
   // private roomId: string;
   // private socket: WebSocket;
   private clicked: boolean;
@@ -170,7 +170,7 @@ export class Game {
     const width = endX - this.startX;
     const height = endY - this.startY;
 
-    let shape: Shape | null = null;
+    let shape: CanvasElement | null = null;
 
     if (this.selectedTool === Tool.Square) {
       shape = {

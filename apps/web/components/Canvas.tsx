@@ -1,6 +1,6 @@
 "use client";
 
-import { useWindowSize } from "@/hooks/useWindowSize";
+import { useWindowSize } from "@/hooks/use-windowSize";
 import React, { useEffect, useRef, useState } from "react";
 import { IconButton } from "./IconButton";
 import {
