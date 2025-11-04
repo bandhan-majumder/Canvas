@@ -17,7 +17,7 @@ export function DeleteCanvasElements() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="destructive" className="bg-red-600">Delete</Button>
+        <Button variant="destructive">Delete</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md bg-[#303030] text-white border-gray-100 outline-none">
         <DialogHeader>

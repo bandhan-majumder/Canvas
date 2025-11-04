@@ -172,14 +172,15 @@ function Canvas() {
         />
       </div>
       <div className="fixed top-4 right-10 flex gap-4">
-        <Button className="bg-white" variant={"link"}>
-          <Link
-            href={"https://github.com/bandhan-majumder/Canvas"}
-            target="blank"
-          >
+        <Link
+          href={"https://github.com/bandhan-majumder/Canvas"}
+          target="blank"
+          className="cursor-pointer"
+        >
+          <Button className="bg-white" variant={"link"}>
             <Github />
-          </Link>
-        </Button>
+          </Button>
+        </Link>
         <Button variant={"outline"} onClick={onShareHandler}>
           Share
         </Button>
