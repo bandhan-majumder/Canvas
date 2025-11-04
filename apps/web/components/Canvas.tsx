@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Github } from "lucide-react";
 import { Tool } from "@/types/tools";
 import { Game } from "@/draw/Game";
-import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { ToolsBar } from "./ToolBar";
@@ -84,11 +84,11 @@ function Canvas() {
     }
   }, [width, height, game]);
 
-  function onShareHandler(): void {
-    const currentLink = location.href;
-    navigator.clipboard.writeText(currentLink);
-    toast.success("URL copied!");
-  }
+  // function onShareHandler(): void {
+  //   const currentLink = location.href;
+  //   navigator.clipboard.writeText(currentLink);
+  //   toast.success("URL copied!");
+  // }
 
   // disable context menu
   useEffect(() => {
