@@ -9,7 +9,6 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { ToolsBar } from "./ToolBar";
-import { ZoomBar } from "./ZoomBar";
 import { useAtomValue, useSetAtom } from "jotai";
 import { localStorageElementsAtom, addShapeAtom } from "@/appState";
 import { CanvasElement } from "@/types/shape";
@@ -185,9 +184,6 @@ function Canvas() {
           Share
         </Button>
         <DeleteCanvasElements />
-      </div>
-      <div className="fixed bottom-4 bg-none right-10">
-        {game && <ZoomBar game={game} />}
       </div>
     </div>
   );
