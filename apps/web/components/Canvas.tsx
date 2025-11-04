@@ -181,9 +181,9 @@ function Canvas() {
             <Github />
           </Button>
         </Link>
-        <Button variant={"outline"} onClick={onShareHandler}>
+        {/* <Button variant={"outline"} onClick={onShareHandler}>
           Share
-        </Button>
+        </Button> */}
         <DeleteCanvasElements />
       </div>
     </div>
