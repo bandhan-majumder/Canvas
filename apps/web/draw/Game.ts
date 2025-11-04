@@ -1,5 +1,4 @@
 import { CanvasElement } from "@/types/shape";
-import { getExistingShape } from "./helper";
 import { Tool } from "@/types/tools";
 
 export class Game {
@@ -18,14 +17,17 @@ export class Game {
   private maxZoomin = 3.814697265625;
   private offsetX: number = 0; 
   private offsetY: number = 0;
+  private onShapeAdded?: (shape: CanvasElement) => void;
 
-  constructor(canvas: HTMLCanvasElement) {
-    // roomId: string, socket: WebSocket
+  constructor(
+    canvas: HTMLCanvasElement,
+    initialShapes: CanvasElement[] = [],
+    onShapeAdded?: (shape: CanvasElement) => void
+  ) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d")!;
-    this.existingShapes = [];
-    // this.roomId = roomId;
-    // this.socket = socket;
+    this.existingShapes = initialShapes;
+    this.onShapeAdded = onShapeAdded;
     this.clicked = false;
     this.init();
     this.initHandlers();
@@ -34,6 +36,12 @@ export class Game {
 
   setTool(tool: Tool) {
     this.selectedTool = tool;
+  }
+
+  // Update shapes from external source (like Jotai atom)
+  updateShapes(shapes: CanvasElement[]) {
+    this.existingShapes = shapes;
+    this.clearAndRenderCanvas();
   }
 
   async init() {
@@ -84,7 +92,7 @@ export class Game {
           shape.centerY,
           shape.radius,
           0,
-          Math.PI * 2,
+          Math.PI * 2
         );
         this.ctx.stroke();
         this.ctx.closePath();
@@ -122,14 +130,14 @@ export class Game {
   // Convert canvas coordinates to world coordinates
   getWorldCoordinates(
     canvasX: number,
-    canvasY: number,
+    canvasY: number
   ): { x: number; y: number } {
     const centerX = this.canvas.width / 2;
     const centerY = this.canvas.height / 2;
 
     // Reverse the transformation (including pan offset)
-    const worldX = ((canvasX - centerX) / this.scale + centerX - this.offsetX);
-    const worldY = ((canvasY - centerY) / this.scale + centerY - this.offsetY);
+    const worldX = (canvasX - centerX) / this.scale + centerX - this.offsetX;
+    const worldY = (canvasY - centerY) / this.scale + centerY - this.offsetY;
 
     return { x: worldX, y: worldY };
   }
@@ -151,12 +159,6 @@ export class Game {
   mouseUpHandler = (e: MouseEvent) => {
     this.clicked = false;
 
-    // If we didn't actually move, don't create a shape
-    if (e.clientX === this.startX && e.clientY === this.startY) {
-      return;
-    }
-
-    // Get the position relative to the canvas
     const rect = this.canvas.getBoundingClientRect();
     const canvasX = e.clientX - rect.left;
     const canvasY = e.clientY - rect.top;
@@ -166,7 +168,11 @@ export class Game {
     const endX = worldCoords.x;
     const endY = worldCoords.y;
 
-    // Calculate the width and the height
+    // Check if there was actual movement
+    if (Math.abs(endX - this.startX) < 1 && Math.abs(endY - this.startY) < 1) {
+      return;
+    }
+
     const width = endX - this.startX;
     const height = endY - this.startY;
 
@@ -200,20 +206,12 @@ export class Game {
 
     if (!shape) return;
 
-    this.existingShapes.push(shape);
-
-    // Also send it to the backend when the mouse ups
-    // this.socket.send(
-    //   JSON.stringify({
-    //     type: "chat",
-    //     roomId: this.roomId,
-    //     object: JSON.stringify({
-    //       ...shape,
-    //     }),
-    //   }),
-    // );
-
-    this.clearAndRenderCanvas();
+    // Notify parent component to update Jotai atom
+    // state update trigger the re-render
+    if (this.onShapeAdded) {
+      this.onShapeAdded(shape);
+    }
+    
   };
 
   mouseMoveHandler = (e: MouseEvent) => {

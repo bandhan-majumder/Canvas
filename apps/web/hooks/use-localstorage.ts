@@ -1,4 +1,4 @@
-import { animeAtom } from "@/appState";
+// import { animeAtom } from "@/appState";
 import type { CanvasElement } from "@/types/shape";
 import { STORAGE_KEYS } from "@/lib/constants";
 

@@ -1,27 +1,24 @@
 import { atom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils';
+import { CanvasElement } from '@/types/shape';
+import { STORAGE_KEYS } from '@/lib/constants';
 
-const countAtom = atom(0)
+export const localStorageElementsAtom = atomWithStorage<CanvasElement[]>(
+  STORAGE_KEYS.LOCAL_STORAGE_ELEMENTS,
+  [] // default value
+);
 
-const countryAtom = atom('Japan')
-
-const citiesAtom = atom(['Tokyo', 'Kyoto', 'Osaka'])
-
-export const animeAtom = atom([
-  {
-    title: 'Ghost in the Shell',
-    year: 1995,
-    watched: true
-  },
-  {
-    title: 'Serial Experiments Lain',
-    year: 1998,
-    watched: false
+export const addShapeAtom = atom(
+  null, // no read
+  (get, set, newShape: CanvasElement) => {
+    const currentShapes = get(localStorageElementsAtom);
+    set(localStorageElementsAtom, [...currentShapes, newShape]);
   }
-])
+);
 
-const progressAtom = atom((get) => {
-  const anime = get(animeAtom)
-  return anime.filter((item) => item.watched).length / anime.length
-})
-
-export { countAtom, countryAtom, citiesAtom, progressAtom };
+// export const clearShapesAtom = atom(
+//   null,
+//   (get, set) => {
+//     set(localStorageElementsAtom, []);
+//   }
+// );

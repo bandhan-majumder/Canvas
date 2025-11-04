@@ -2,27 +2,46 @@
 
 import { useWindowSize } from "@/hooks/use-windowSize";
 import React, { useEffect, useRef, useState } from "react";
-import { IconButton } from "./IconButton";
-import {
-  Circle,
-  Github,
-  Minus,
-  Plus,
-  Square
-} from "lucide-react";
+import { Github } from "lucide-react";
 import { Tool } from "@/types/tools";
 import { Game } from "@/draw/Game";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { ToolsBar } from "./ToolBar";
+import { ZoomBar } from "./ZoomBar";
+import { useAtomValue, useSetAtom } from "jotai";
+import { localStorageElementsAtom, addShapeAtom } from "@/appState";
+import { CanvasElement } from "@/types/shape";
+import { STORAGE_KEYS } from "@/lib/constants";
 
 function Canvas() {
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game>();
   const { width, height } = useWindowSize();
+  
+  // Read shapes from localStorage via Jotai
+  const shapes = useAtomValue(localStorageElementsAtom);
+  const addShape = useSetAtom(addShapeAtom);
 
-  // const isMobile = width < 768;
+  // Jotai state persists even if localStorage is manually cleared
+  useEffect(() => {
+    const checkInterval = setInterval(() => {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEYS.LOCAL_STORAGE_ELEMENTS);
+        if (stored === null && shapes.length > 0) {
+          localStorage.setItem(STORAGE_KEYS.LOCAL_STORAGE_ELEMENTS, JSON.stringify(shapes));
+        }
+      } catch (e) {
+        console.error('Error restoring localStorage:', e);
+      }
+    }, 500);
+
+    return () => {
+      clearInterval(checkInterval);
+    };
+  }, [shapes]);
 
   useEffect(() => {
     if (selectedTool && game) {
@@ -31,15 +50,27 @@ function Canvas() {
   }, [selectedTool, game]);
 
   useEffect(() => {
-    // create a new game loop
     if (canvasRef.current) {
-      const g = new Game(canvasRef.current);
+      const g = new Game(
+        canvasRef.current,
+        shapes,
+        (newShape: CanvasElement) => {
+          addShape(newShape);
+        }
+      );
       setGame(g);
       return () => {
         g.destroy();
       };
     }
   }, [canvasRef]);
+
+  // Update game shapes when localStorage changes
+  useEffect(() => {
+    if (game) {
+      game.updateShapes(shapes);
+    }
+  }, [shapes, game]);
 
   // Handle window resize
   useEffect(() => {
@@ -52,13 +83,6 @@ function Canvas() {
       game.clearAndRenderCanvas();
     }
   }, [width, height, game]);
-
-  // Close mobile menu when tool is selected
-  // useEffect(() => {
-  //   if (selectedTool && isMobile) {
-  //     setIsMobileMenuOpen(false);
-  //   }
-  // }, [selectedTool, isMobile]);
 
   function onShareHandler(): void {
     const currentLink = location.href;
@@ -73,22 +97,22 @@ function Canvas() {
     return () => document.removeEventListener("contextmenu", preventContextMenu);
   }, []);
 
-  // Prevent zoom on double tap for iOS
-  useEffect(() => {
-    const preventZoom = (event: TouchEvent) => {
-      if (event.touches.length > 1) {
-        event.preventDefault();
-      }
-    };
+  // // Prevent zoom on double tap for iOS
+  // useEffect(() => {
+  //   const preventZoom = (event: TouchEvent) => {
+  //     if (event.touches.length > 1) {
+  //       event.preventDefault();
+  //     }
+  //   };
 
-    document.addEventListener('touchstart', preventZoom, { passive: false });
-    document.addEventListener('touchmove', preventZoom, { passive: false });
+  //   document.addEventListener("touchstart", preventZoom, { passive: false });
+  //   document.addEventListener("touchmove", preventZoom, { passive: false });
 
-    return () => {
-      document.removeEventListener('touchstart', preventZoom);
-      document.removeEventListener('touchmove', preventZoom);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener("touchstart", preventZoom);
+  //     document.removeEventListener("touchmove", preventZoom);
+  //   };
+  // }, []);
 
   // Add mouse wheel scrolling
   useEffect(() => {
@@ -124,10 +148,10 @@ function Canvas() {
       }
     };
 
-    canvas.addEventListener('wheel', handleWheel, { passive: false });
+    canvas.addEventListener("wheel", handleWheel, { passive: false });
 
     return () => {
-      canvas.removeEventListener('wheel', handleWheel);
+      canvas.removeEventListener("wheel", handleWheel);
     };
   }, [game]);
 
@@ -138,7 +162,7 @@ function Canvas() {
         width={width}
         height={height}
         className="touch-none"
-        style={{ touchAction: 'none' }}
+        style={{ touchAction: "none" }}
       />
 
       <div className="fixed top-4 left-5/12">
@@ -149,71 +173,19 @@ function Canvas() {
       </div>
       <div className="fixed top-4 right-10 flex gap-4">
         <Button className="bg-white" variant={"link"}>
-          <Link href={"https://github.com/bandhan-majumder/Canvas"} target="blank">
+          <Link
+            href={"https://github.com/bandhan-majumder/Canvas"}
+            target="blank"
+          >
             <Github />
           </Link>
         </Button>
         <Button variant={"outline"} onClick={onShareHandler}>
           Share
         </Button>
-        <div>
-        </div>
       </div>
       <div className="fixed bottom-4 bg-none right-10">
         {game && <ZoomBar game={game} />}
-      </div>
-    </div>
-  );
-}
-
-// Desktop Tools Bar
-function ToolsBar({
-  selectedTool,
-  setSelectedTool,
-}: {
-  selectedTool: Tool | null;
-  setSelectedTool: (tool: Tool) => void;
-}) {
-  return (
-    <div className="bg-[#232329] p-2 rounded-xl shadow-md">
-      <div className="flex gap-2">
-        <IconButton
-          icon={<Minus />}
-          onClick={() => setSelectedTool(Tool.Line)}
-          activated={selectedTool === Tool.Line}
-        />
-        <IconButton
-          icon={<Square />}
-          onClick={() => setSelectedTool(Tool.Square)}
-          activated={selectedTool === Tool.Square}
-        />
-        <IconButton
-          icon={<Circle />}
-          onClick={() => setSelectedTool(Tool.Circle)}
-          activated={selectedTool === Tool.Circle}
-        />
-      </div>
-    </div>
-  );
-}
-
-// Desktop Zoom Bar
-function ZoomBar({ game }: { game: Game }) {
-  return (
-    <div className="bg-[#232329] rounded-lg shadow-md">
-      <div className="flex gap-2 bg-transparent rounded-xl">
-        <IconButton
-          icon={<Plus size={17} />}
-          isBorder={false}
-          onClick={() => {
-            game.zoomInHandler();
-          }}
-        />
-        <IconButton
-          icon={<Minus size={17} />}
-          isBorder={false}
-          onClick={() => game.zoomOutHandler()}
-        />
       </div>
     </div>
   );
