@@ -19,17 +19,17 @@ export function DeleteCanvasElements() {
       <DialogTrigger asChild>
         <Button variant="destructive" className="bg-red-600">Delete</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md bg-black text-white border-gray-100 outline-none">
+      <DialogContent className="sm:max-w-md bg-[#303030] text-white border-gray-100 outline-none">
         <DialogHeader>
           <DialogTitle>Are you sure?</DialogTitle>
           <DialogDescription>
-            All of your drawings will be lost if you click the delet button.
+            All of your drawings will be lost if you confirm to delete.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="sm:justify-start">
           <DialogClose asChild>
-            <div>
-              <Button type="button" variant="secondary">
+            <div className="flex gap-5">
+              <Button type="button" variant="secondary" className="outline-none border-none">
                 Close
               </Button>
               <Button type="button" variant="destructive" className="bg-red-600" onClick={clearAllShapes}>
