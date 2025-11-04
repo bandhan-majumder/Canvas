@@ -11,7 +11,7 @@ import { Button } from "./ui/button";
 import { ToolsBar } from "./ToolBar";
 import { ZoomBar } from "./ZoomBar";
 import { useAtomValue, useSetAtom } from "jotai";
-import { localStorageElementsAtom, addShapeAtom } from "@/appState";
+import { localStorageElementsAtom, addShapeAtom, clearShapesAtom } from "@/appState";
 import { CanvasElement } from "@/types/shape";
 import { STORAGE_KEYS } from "@/lib/constants";
 
@@ -24,6 +24,7 @@ function Canvas() {
   // Read shapes from localStorage via Jotai
   const shapes = useAtomValue(localStorageElementsAtom);
   const addShape = useSetAtom(addShapeAtom);
+  const clearAllShapes = useSetAtom(clearShapesAtom)
 
   // Jotai state persists even if localStorage is manually cleared
   useEffect(() => {
@@ -182,6 +183,11 @@ function Canvas() {
         </Button>
         <Button variant={"outline"} onClick={onShareHandler}>
           Share
+        </Button>
+        <Button variant={"destructive"} className="bg-red-400"
+        onClick={clearAllShapes}
+        >
+          Clear Canvas
         </Button>
       </div>
       <div className="fixed bottom-4 bg-none right-10">

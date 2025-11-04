@@ -16,9 +16,9 @@ export const addShapeAtom = atom(
   }
 );
 
-// export const clearShapesAtom = atom(
-//   null,
-//   (get, set) => {
-//     set(localStorageElementsAtom, []);
-//   }
-// );
+export const clearShapesAtom = atom(
+  null,
+  (get, set) => {
+    set(localStorageElementsAtom, []);
+  }
+);
