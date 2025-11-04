@@ -187,7 +187,7 @@ export class Game {
         width,
       };
     } else if (this.selectedTool === Tool.Circle) {
-      const radius = Math.abs(Math.max(width, height) / 2);
+      const radius = Math.sqrt(width * width + height * height) / 2;
       shape = {
         type: "circle",
         radius,
