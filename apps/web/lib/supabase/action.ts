@@ -5,12 +5,16 @@ import { CanvasElement } from "@/types/shape";
 export async function createRoomWithElements(): Promise<string | null> {
     const { savedElements } = importFromLocalStorage();
     try {
-        const { data } = await supabase
+        const { data,error } = await supabase
             .from('rooms')
             .insert({
                 elements: JSON.stringify(savedElements)
             }).select('id');
 
+        if (error){
+            throw new Error(error.message);
+        }
+        
         if (data && data[0].id) {
             return data[0].id;
         } else {

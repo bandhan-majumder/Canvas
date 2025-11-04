@@ -18,12 +18,13 @@ export function ShareSessionModal() {
 
   async function onShareHandler(): Promise<void> {
     const newRoomId = await createRoomWithElements();
-    if (!newRoomId) {
+    if (newRoomId) {
+      navigator.clipboard.writeText(`canvas.bandhanmajumder.com/room/${newRoomId}`);
+      toast.success("URL copied to your clipboard!")
+      router.push(`/room/${newRoomId}`);
+    } else {
       toast.error("Failed to create a session. Please try again later!")
     }
-    navigator.clipboard.writeText(`canvas.bandhanmajumder.com/room/${newRoomId}`);
-    toast.success("URL copied to your clipboard!")
-    router.push(`/room/${newRoomId}`);
   }
 
   return (
