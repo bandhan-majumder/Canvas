@@ -4,13 +4,14 @@ import { redirect } from "next/navigation";
 import React from "react";
 
 type Props = {
-    params: { id: string }
+    params: Promise<{ id: string }>
 }
 
 export default async function Home({ params }: Props) {
+    const param = await params;
     let elements;
     try {
-        elements = await getElementsByRoomId(params.id);
+        elements = await getElementsByRoomId(param.id);
     } catch {
         // that room does not exist
         redirect("/")
