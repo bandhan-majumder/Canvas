@@ -35,8 +35,22 @@ export async function getElementsByRoomId(roomId: string): Promise<CanvasElement
             .single();
 
         if (data && data.elements) {
-            const parsedElements = JSON.parse(JSON.parse(data.elements));
-            return parsedElements as CanvasElement[];
+            const elementsRaw = data.elements as unknown;
+            try {
+                let parsedElements: unknown;
+                if (typeof elementsRaw === "string") {
+                    parsedElements = JSON.parse(elementsRaw);
+                    if (typeof parsedElements === "string") {
+                        parsedElements = JSON.parse(parsedElements);
+                    }
+                } else {
+                    parsedElements = elementsRaw;
+                }
+                return parsedElements as CanvasElement[];
+            } catch (err) {
+                console.log("Error parsing elements: ", err);
+                return null;
+            }
         } else {
             return null;
         }
