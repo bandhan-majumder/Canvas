@@ -1,27 +1,23 @@
-import Canvas from "@/components/Canvas";
 import { getElementsByRoomId } from "@/lib/supabase/action";
 import { redirect } from "next/navigation";
-import React from "react";
+import RoomClient from "@/components/RoomClient";
 
 type Props = {
     params: Promise<{ id: string }>
 }
 
-export default async function Home({ params }: Props) {
+export default async function RoomPage({ params }: Props) {
     const param = await params;
+    const room = param.id;
+
     let elements;
+    // checks if it's a valid roomId or not
     try {
-        elements = await getElementsByRoomId(param.id);
+        elements = await getElementsByRoomId(room);
     } catch {
         // that room does not exist
         redirect("/")
     }
 
-    return (
-        <div className="h-full w-full bg-[#111011]">
-            <div className="absolute inset-0 transition-opacity duration-300 ease-in-out opacity-100">
-                <Canvas prevElements={elements || []} />
-            </div>
-        </div>
-    );
+    return <RoomClient roomId={room} initialElements={elements || []} />;
 }

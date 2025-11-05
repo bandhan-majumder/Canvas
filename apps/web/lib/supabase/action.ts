@@ -28,11 +28,15 @@ export async function createRoomWithElements(): Promise<string | null> {
 
 export async function getElementsByRoomId(roomId: string): Promise<CanvasElement[] | null> {
     try {
-        const { data } = await supabase
+        const { data, error } = await supabase
             .from('rooms')
             .select('elements')
             .eq('id', roomId)
             .single();
+
+        if (error) {
+            throw new Error(error.message);
+        }
 
         if (data && data.elements) {
             const elementsRaw = data.elements as unknown;
@@ -56,6 +60,6 @@ export async function getElementsByRoomId(roomId: string): Promise<CanvasElement
         }
     } catch (error: unknown) {
         console.log("Error fetching elements: ", error);
-        return null;
+        throw new Error("Room not found");
     }
 }

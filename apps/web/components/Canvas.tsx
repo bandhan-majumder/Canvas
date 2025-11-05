@@ -15,7 +15,7 @@ import { STORAGE_KEYS } from "@/lib/constants";
 import { DeleteElementsModal } from "./DeleteElementsModal";
 import { ShareSessionModal } from "./ShareSessionModal";
 
-function Canvas({ prevElements }: {
+export default function Canvas({ prevElements }: {
   prevElements?: CanvasElement[]
 }) {
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
@@ -174,5 +174,3 @@ function Canvas({ prevElements }: {
     </div>
   );
 }
-
-export default Canvas;
