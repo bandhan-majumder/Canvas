@@ -9,15 +9,19 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import { ToolsBar } from "./ToolBar";
 import { useAtomValue, useSetAtom } from "jotai";
-import { localStorageElementsAtom, addShapeAtom } from "@/appState";
+import { localStorageElementsAtom, addShapesAtom } from "@/appState";
 import { CanvasElement } from "@/types/shape";
 import { STORAGE_KEYS } from "@/lib/constants";
 import { DeleteElementsModal } from "./DeleteElementsModal";
 import { ShareSessionModal } from "./ShareSessionModal";
 
-export default function Canvas({ prevElements }: {
-  prevElements?: CanvasElement[]
-}) {
+interface CanvasProps {
+  prevElements?: CanvasElement[];
+  onShapeAdded?: (shape: CanvasElement) => void;
+  roomId?: string;
+}
+
+export default function Canvas({ prevElements, onShapeAdded, roomId }: CanvasProps) {
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game>();
@@ -25,7 +29,7 @@ export default function Canvas({ prevElements }: {
   
   // Read shapes from localStorage via Jotai
   const shapes = useAtomValue(localStorageElementsAtom);
-  const addShape = useSetAtom(addShapeAtom);
+  const addShape = useSetAtom(addShapesAtom);
 
   // if drawing exist in a new room, add that to the current state
   useEffect(() => {
@@ -34,8 +38,11 @@ export default function Canvas({ prevElements }: {
     }
   }, [prevElements]);
 
-  // Jotai state persists even if localStorage is manually cleared
+  // Only sync with localStorage when NOT in a room (solo mode)
+  // In room mode, Supabase is the source of truth
   useEffect(() => {
+    if (roomId) return; // Skip localStorage sync in room mode
+
     const checkInterval = setInterval(() => {
       try {
         const stored = localStorage.getItem(STORAGE_KEYS.LOCAL_STORAGE_ELEMENTS);
@@ -50,7 +57,7 @@ export default function Canvas({ prevElements }: {
     return () => {
       clearInterval(checkInterval);
     };
-  }, [shapes]);
+  }, [shapes, roomId]);
 
   useEffect(() => {
     if (selectedTool && game) {
@@ -60,12 +67,20 @@ export default function Canvas({ prevElements }: {
 
   useEffect(() => {
     if (canvasRef.current) {
+      const handleNewShape = (newShape: CanvasElement) => {
+        // Add to local state
+        addShape(newShape);
+        
+        // If in a room, notify via WebSocket
+        if (onShapeAdded) {
+          onShapeAdded(newShape);
+        }
+      };
+
       const g = new Game(
         canvasRef.current,
         shapes,
-        (newShape: CanvasElement) => {
-          addShape(newShape);
-        }
+        handleNewShape
       );
       setGame(g);
       return () => {

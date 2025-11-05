@@ -206,10 +206,10 @@ export class Game {
 
     if (!shape) return;
 
-    // Notify parent component to update Jotai atom
-    // state update trigger the re-render
+    // Add the new shape to existing shapes
     if (this.onShapeAdded) {
       this.onShapeAdded(shape);
+      this.clearAndRenderCanvas();
     }
     
   };

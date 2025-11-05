@@ -17,7 +17,7 @@ export async function getExistingShape(roomId: string) {
       const messageData = JSON.parse(msg.object);
       return messageData;
     } catch (error) {
-      console.log("Error parsing object data: ", error);
+      console.error("Error parsing object data: ", error);
     }
   });
 

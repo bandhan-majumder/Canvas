@@ -8,33 +8,82 @@ interface Room {
 
 const rooms: Record<string, Room> = {};
 
-const relayerSocket = new WebSocket(process.env.RELAYER_URL ? process.env.RELAYER_URL : "ws://localhost:8080");
+const relayerSocket = new WebSocketType(process.env.RELAYER_URL ? process.env.RELAYER_URL : "ws://localhost:8080");
 
-relayerSocket.onmessage = ({ data }) => {
-    const parsedData = JSON.parse(data);
-    if (parsedData.type == 'chat') {
-        const room = parsedData.room;
-        rooms[room]?.sockets.map(s => s.send(data));
+relayerSocket.on('open', () => {
+    console.log('Connected to relayer');
+});
+
+relayerSocket.on('error', (error) => {
+    console.error('Relayer connection error:', error);
+});
+
+relayerSocket.on('close', () => {
+    console.log('Disconnected from relayer. Attempting to reconnect...');
+});
+
+relayerSocket.on('message', (data) => {
+    try {
+        const parsedData = JSON.parse(data.toString());
+        
+        if (parsedData.type === 'chat') {
+            const room = parsedData.room;
+            if (rooms[room]) {
+                rooms[room].sockets.forEach(s => {
+                    if (s.readyState === WebSocketType.OPEN) {
+                        s.send(data.toString());
+                    }
+                });
+            }
+        }
+    } catch (error) {
+        console.error('Error parsing message from relayer:', error);
     }
-}
+});
 
 wss.on('connection', function (ws) {
     ws.on('error', console.error);
-    ws.on('message', function message(data: string) {
-        const parsedData = JSON.parse(data);
-        // join room message stays in the same server
-        if (parsedData.type == "join-room") {
-            const room = parsedData.room;
-            // if the room does not exist, create it
-            if (!rooms[room]) {
-                rooms[room] = {
-                    sockets: []
+    
+    ws.on('message', function message(data: Buffer) {
+        try {
+            const parsedData = JSON.parse(data.toString());
+            
+            if (parsedData.type === "join-room") {
+                const room = parsedData.room;
+                
+                if (!rooms[room]) {
+                    rooms[room] = {
+                        sockets: []
+                    };
+                }
+                
+                rooms[room].sockets.push(ws);
+            } else if (parsedData.type === "chat") {
+                if (relayerSocket.readyState === WebSocketType.OPEN) {
+                    relayerSocket.send(data.toString());
+                } else {
+                    console.error('Relayer socket is not open');
                 }
             }
-            rooms[room].sockets.push(ws);
-            // only the chat message relays to the relayer
-        } else if (parsedData.type == "chat") {
-            relayerSocket.send(data);
+        } catch (error) {
+            console.error('Error parsing message from client:', error);
         }
-    })
-})
+    });
+    
+    ws.on('close', () => {
+        Object.keys(rooms).forEach(room => {
+            const roomObj = rooms[room];
+            if (!roomObj) return;
+            const index = roomObj.sockets.indexOf(ws);
+            if (index !== -1) {
+                roomObj.sockets.splice(index, 1);
+                
+                if (roomObj.sockets.length === 0) {
+                    delete rooms[room];
+                }
+            }
+        });
+    });
+});
+
+console.log(`WebSocket server running on port ${process.env.PORT || 8081}`);

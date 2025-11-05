@@ -19,19 +19,19 @@ export type Database = {
           created_at: string
           elements: Json | null
           id: string
-          isCollaborating: boolean
+          isShared: boolean
         }
         Insert: {
           created_at?: string
           elements?: Json | null
           id?: string
-          isCollaborating?: boolean
+          isShared?: boolean
         }
         Update: {
           created_at?: string
           elements?: Json | null
           id?: string
-          isCollaborating?: boolean
+          isShared?: boolean
         }
         Relationships: []
       }
