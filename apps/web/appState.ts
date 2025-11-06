@@ -1,23 +1,23 @@
-import { atom } from 'jotai';
-import { atomWithStorage } from 'jotai/utils';
-import { CanvasElement } from '@/types/shape';
-import { STORAGE_KEYS } from '@/lib/constants';
+import { atom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
+import { CanvasElement } from "@/types/shape";
+import { STORAGE_KEYS } from "@/lib/constants";
 
 export const localStorageElementsAtom = atomWithStorage<CanvasElement[]>(
   STORAGE_KEYS.LOCAL_STORAGE_ELEMENTS,
-  [] // default value
+  [], // default value
 );
 
 export const localStorageUsernameAtom = atomWithStorage<string>(
   STORAGE_KEYS.LOCAL_STORAGE_USERNAME,
-  '' // default value
+  "", // default value
 );
 
 export const addUsernameAtom = atom(
   null, // no read
   (get, set, username: string) => {
     set(localStorageUsernameAtom, username);
-  }
+  },
 );
 
 // support for both single shape and multiple shapes
@@ -32,26 +32,20 @@ export const addShapesAtom = atom(
       const currentShapes = get(localStorageElementsAtom);
       set(localStorageElementsAtom, [...currentShapes, newShapes]);
     }
-  }
+  },
 );
 
 export const replaceShapesAtom = atom(
   null,
   (get, set, shapes: CanvasElement[]) => {
     set(localStorageElementsAtom, shapes);
-  }
+  },
 );
 
-export const clearShapesAtom = atom(
-  null,
-  (get, set) => {
-    set(localStorageElementsAtom, []);
-  }
-);
+export const clearShapesAtom = atom(null, (get, set) => {
+  set(localStorageElementsAtom, []);
+});
 
-export const clearUsernameAtom = atom(
-  null,
-  (get, set) => {
-    set(localStorageUsernameAtom, '');
-  }
-);
+export const clearUsernameAtom = atom(null, (get, set) => {
+  set(localStorageUsernameAtom, "");
+});

@@ -7,10 +7,10 @@
 ```
 git clone https://github.com/bandhan-majumder/Canvas
 cd Canvas
-npm install 
+npm install
 ```
 
-Copy the .env.sample files and setup the db url and password 
+Copy the .env.sample files and setup the db url and password
 
 ```
 cp apps/web/.env.sample apps/web/.env
@@ -39,10 +39,12 @@ npm run dev
 4. Get data synced in real time
 
 ## Technologies used
+
 1. Turbo repo, nextjs, next-auth
 2. Websocket
 3. Prisma, Postgres
 
 ## Deployed on
+
 1. Render (websocket)
 2. Vercel (frontend)

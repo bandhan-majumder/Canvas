@@ -15,14 +15,14 @@ export class Game {
   private selectedTool: Tool | undefined; // by default, select square
   private maxZoomout = 0.26214400000000015;
   private maxZoomin = 3.814697265625;
-  private offsetX: number = 0; 
+  private offsetX: number = 0;
   private offsetY: number = 0;
   private onShapeAdded?: (shape: CanvasElement) => void;
 
   constructor(
     canvas: HTMLCanvasElement,
     initialShapes: CanvasElement[] = [],
-    onShapeAdded?: (shape: CanvasElement) => void
+    onShapeAdded?: (shape: CanvasElement) => void,
   ) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d")!;
@@ -92,7 +92,7 @@ export class Game {
           shape.centerY,
           shape.radius,
           0,
-          Math.PI * 2
+          Math.PI * 2,
         );
         this.ctx.stroke();
         this.ctx.closePath();
@@ -112,7 +112,6 @@ export class Game {
   initHandlers() {
     // this.socket.onmessage = (event) => {
     //   const parsedData = JSON.parse(event.data);
-
     //   if (parsedData.type === "chat") {
     //     const parsedShape = JSON.parse(parsedData.object);
     //     this.existingShapes.push(parsedShape);
@@ -130,7 +129,7 @@ export class Game {
   // Convert canvas coordinates to world coordinates
   getWorldCoordinates(
     canvasX: number,
-    canvasY: number
+    canvasY: number,
   ): { x: number; y: number } {
     const centerX = this.canvas.width / 2;
     const centerY = this.canvas.height / 2;
@@ -211,7 +210,6 @@ export class Game {
       this.onShapeAdded(shape);
       this.clearAndRenderCanvas();
     }
-    
   };
 
   mouseMoveHandler = (e: MouseEvent) => {

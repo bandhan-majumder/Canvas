@@ -9,7 +9,11 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import { ToolsBar } from "./ToolBar";
 import { useAtomValue, useSetAtom } from "jotai";
-import { localStorageElementsAtom, addShapesAtom, localStorageUsernameAtom } from "@/appState";
+import {
+  localStorageElementsAtom,
+  addShapesAtom,
+  localStorageUsernameAtom,
+} from "@/appState";
 import { CanvasElement } from "@/types/shape";
 import { STORAGE_KEYS } from "@/lib/constants";
 import { DeleteElementsModal } from "./DeleteElementsModal";
@@ -21,12 +25,16 @@ interface CanvasProps {
   roomId?: string;
 }
 
-export default function Canvas({ prevElements, onShapeAdded, roomId }: CanvasProps) {
+export default function Canvas({
+  prevElements,
+  onShapeAdded,
+  roomId,
+}: CanvasProps) {
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game>();
   const { width, height } = useWindowSize();
-  
+
   // Read shapes from localStorage via Jotai
   const shapes = useAtomValue(localStorageElementsAtom);
   const storedUsername = useAtomValue(localStorageUsernameAtom);
@@ -46,20 +54,30 @@ export default function Canvas({ prevElements, onShapeAdded, roomId }: CanvasPro
 
     const checkInterval = setInterval(() => {
       try {
-        const stored = localStorage.getItem(STORAGE_KEYS.LOCAL_STORAGE_ELEMENTS);
-        const username = localStorage.getItem(STORAGE_KEYS.LOCAL_STORAGE_USERNAME);
+        const stored = localStorage.getItem(
+          STORAGE_KEYS.LOCAL_STORAGE_ELEMENTS,
+        );
+        const username = localStorage.getItem(
+          STORAGE_KEYS.LOCAL_STORAGE_USERNAME,
+        );
 
         // sync elements
         if (stored === null && shapes.length > 0) {
-          localStorage.setItem(STORAGE_KEYS.LOCAL_STORAGE_ELEMENTS, JSON.stringify(shapes));
+          localStorage.setItem(
+            STORAGE_KEYS.LOCAL_STORAGE_ELEMENTS,
+            JSON.stringify(shapes),
+          );
         }
 
         // sync username
         if (storedUsername && storedUsername !== username) {
-          localStorage.setItem(STORAGE_KEYS.LOCAL_STORAGE_USERNAME, storedUsername);
+          localStorage.setItem(
+            STORAGE_KEYS.LOCAL_STORAGE_USERNAME,
+            storedUsername,
+          );
         }
       } catch (e) {
-        console.error('Error restoring localStorage:', e);
+        console.error("Error restoring localStorage:", e);
       }
     }, 500);
 
@@ -79,18 +97,14 @@ export default function Canvas({ prevElements, onShapeAdded, roomId }: CanvasPro
       const handleNewShape = (newShape: CanvasElement) => {
         // Add to local state
         addShape(newShape);
-        
+
         // If in a room, notify via WebSocket
         if (onShapeAdded) {
           onShapeAdded(newShape);
         }
       };
 
-      const g = new Game(
-        canvasRef.current,
-        shapes,
-        handleNewShape
-      );
+      const g = new Game(canvasRef.current, shapes, handleNewShape);
       setGame(g);
       return () => {
         g.destroy();
@@ -121,9 +135,9 @@ export default function Canvas({ prevElements, onShapeAdded, roomId }: CanvasPro
   useEffect(() => {
     const preventContextMenu = (event: Event) => event.preventDefault();
     document.addEventListener("contextmenu", preventContextMenu);
-    return () => document.removeEventListener("contextmenu", preventContextMenu);
+    return () =>
+      document.removeEventListener("contextmenu", preventContextMenu);
   }, []);
-
 
   // Add mouse wheel scrolling
   useEffect(() => {

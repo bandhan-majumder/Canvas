@@ -1,5 +1,5 @@
-import { addUsernameAtom, localStorageElementsAtom } from "@/appState"
-import { Button } from "@/components/ui/button"
+import { addUsernameAtom, localStorageElementsAtom } from "@/appState";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -9,14 +9,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { STORAGE_KEYS } from "@/lib/constants"
-import { generateRandomUsername } from "@/lib/random-username"
-import { createRoomWithElements, isRoomOwner } from "@/lib/supabase/action"
-import { useAtomValue, useSetAtom } from "jotai"
-import { useRouter, usePathname } from "next/navigation"
-import { useEffect, useState } from "react"
-import toast from "react-hot-toast"
+} from "@/components/ui/dialog";
+import { STORAGE_KEYS } from "@/lib/constants";
+import { generateRandomUsername } from "@/lib/random-username";
+import { createRoomWithElements, isRoomOwner } from "@/lib/supabase/action";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useRouter, usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 // interface ShareSessionModalProps {
 //   onStopSharing?: () => void;
@@ -30,21 +30,23 @@ export function ShareSessionModal() {
   const [isOwner, setIsOwner] = useState(false);
   const [isShared, setIsShared] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [userName, setUserName] = useState<string>("")
+  const [userName, setUserName] = useState<string>("");
   const savedElements = useAtomValue(localStorageElementsAtom);
 
-  const roomId = pathname?.startsWith('/room/')
-    ? pathname.split('/room/')[1]
+  const roomId = pathname?.startsWith("/room/")
+    ? pathname.split("/room/")[1]
     : undefined;
 
   // Load username from localStorage only on client side
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       try {
-        const storedUsername = localStorage.getItem(STORAGE_KEYS.LOCAL_STORAGE_USERNAME);
+        const storedUsername = localStorage.getItem(
+          STORAGE_KEYS.LOCAL_STORAGE_USERNAME,
+        );
         setUserName(storedUsername || "");
       } catch (error) {
-        console.error('Error reading username from localStorage:', error);
+        console.error("Error reading username from localStorage:", error);
       }
     }
   }, []);
@@ -72,7 +74,7 @@ export function ShareSessionModal() {
       } finally {
         setIsLoading(false);
       }
-    }
+    };
     checkIfOwnerAndShared();
   }, [userName, roomId]);
 
@@ -87,16 +89,16 @@ export function ShareSessionModal() {
 
     const newRoomId = await createRoomWithElements({
       savedElements,
-      userName: finalUsername
+      userName: finalUsername,
     });
 
     if (newRoomId) {
       const shareUrl = `${window.location.origin}/room/${newRoomId}`;
       navigator.clipboard.writeText(shareUrl);
-      toast.success("URL copied to your clipboard!")
+      toast.success("URL copied to your clipboard!");
       router.push(`/room/${newRoomId}`);
     } else {
-      toast.error("Failed to create a session. Please try again later!")
+      toast.error("Failed to create a session. Please try again later!");
     }
   }
 
@@ -128,9 +130,7 @@ export function ShareSessionModal() {
   // User is in a room, is owner, and already sharing
   if (roomId && isOwner && isShared) {
     return (
-      <div className="bg-[#B2AEFF] text-black">
-        Sharing..
-      </div>
+      <div className="bg-[#B2AEFF] text-black">Sharing..</div>
       // <Dialog>
       //   <DialogTrigger asChild>
       //     <Button variant="default" className="bg-[#B2AEFF] text-black">Stop Sharing</Button>
@@ -163,20 +163,29 @@ export function ShareSessionModal() {
     return (
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="default" className="bg-[#B2AEFF] text-black">Share</Button>
+          <Button variant="default" className="bg-[#B2AEFF] text-black">
+            Share
+          </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-md bg-[#303030] text-white border-gray-100 outline-none">
           <DialogHeader>
             <DialogTitle>Share your session!</DialogTitle>
             <DialogDescription>
-              People you share this link with will be able to collaborate on this canvas.
+              People you share this link with will be able to collaborate on
+              this canvas.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="sm:justify-start">
             <DialogClose asChild>
               <div className="flex gap-5">
-                <Button type="button" variant="secondary">Close</Button>
-                <Button type="button" className="bg-[#B2AEFF] text-black" onClick={onShareHandler}>
+                <Button type="button" variant="secondary">
+                  Close
+                </Button>
+                <Button
+                  type="button"
+                  className="bg-[#B2AEFF] text-black"
+                  onClick={onShareHandler}
+                >
                   Confirm
                 </Button>
               </div>

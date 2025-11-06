@@ -1,28 +1,38 @@
 "use client";
 
-import { useEffect, useCallback, useRef } from 'react';
-import Canvas from './Canvas';
-import { CanvasElement } from '@/types/shape';
-import { useWebSocket } from '@/hooks/useWebsocket';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { localStorageElementsAtom, addShapesAtom, replaceShapesAtom } from '@/appState';
-import { updateRoomElements } from '@/lib/supabase/action';
+import { useEffect, useCallback, useRef } from "react";
+import Canvas from "./Canvas";
+import { CanvasElement } from "@/types/shape";
+import { useWebSocket } from "@/hooks/useWebsocket";
+import { useAtomValue, useSetAtom } from "jotai";
+import {
+  localStorageElementsAtom,
+  addShapesAtom,
+  replaceShapesAtom,
+} from "@/appState";
+import { updateRoomElements } from "@/lib/supabase/action";
 
 interface RoomClientProps {
   roomId: string;
   initialElements: CanvasElement[];
 }
 
-export default function RoomClient({ roomId, initialElements }: RoomClientProps) {
+export default function RoomClient({
+  roomId,
+  initialElements,
+}: RoomClientProps) {
   const shapes = useAtomValue(localStorageElementsAtom);
   const addShapes = useSetAtom(addShapesAtom);
   const replaceShapes = useSetAtom(replaceShapesAtom);
   const isInitializedRef = useRef(false);
   const lastSyncedShapesRef = useRef<CanvasElement[]>([]);
 
-  const handleShapeReceived = useCallback((shape: CanvasElement) => {
-    addShapes(shape);
-  }, [addShapes]);
+  const handleShapeReceived = useCallback(
+    (shape: CanvasElement) => {
+      addShapes(shape);
+    },
+    [addShapes],
+  );
 
   const { sendShape, isConnected } = useWebSocket({
     roomId,
@@ -31,7 +41,7 @@ export default function RoomClient({ roomId, initialElements }: RoomClientProps)
 
   useEffect(() => {
     if (!isInitializedRef.current && initialElements.length > 0) {
-      lastSyncedShapesRef.current = initialElements; 
+      lastSyncedShapesRef.current = initialElements;
       replaceShapes(initialElements);
       setTimeout(() => {
         isInitializedRef.current = true;
@@ -41,23 +51,27 @@ export default function RoomClient({ roomId, initialElements }: RoomClientProps)
 
   useEffect(() => {
     if (!isInitializedRef.current) return;
-    if (JSON.stringify(shapes) === JSON.stringify(lastSyncedShapesRef.current)) return;
+    if (JSON.stringify(shapes) === JSON.stringify(lastSyncedShapesRef.current))
+      return;
 
     const syncToSupabase = async () => {
       try {
         await updateRoomElements(roomId, shapes);
         lastSyncedShapesRef.current = shapes;
       } catch (error) {
-        console.error('Error syncing to Supabase:', error);
+        console.error("Error syncing to Supabase:", error);
       }
     };
 
     syncToSupabase();
   }, [shapes, roomId]);
 
-  const handleShapeAdded = useCallback((shape: CanvasElement) => {
-    sendShape(shape);
-  }, [sendShape]);
+  const handleShapeAdded = useCallback(
+    (shape: CanvasElement) => {
+      sendShape(shape);
+    },
+    [sendShape],
+  );
 
   return (
     <div className="relative h-screen w-screen">

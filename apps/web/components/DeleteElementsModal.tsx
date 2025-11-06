@@ -1,5 +1,5 @@
-import { clearShapesAtom } from "@/appState"
-import { Button } from "@/components/ui/button"
+import { clearShapesAtom } from "@/appState";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -9,11 +9,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { useSetAtom } from "jotai"
+} from "@/components/ui/dialog";
+import { useSetAtom } from "jotai";
 
 export function DeleteElementsModal() {
-  const clearAllShapes = useSetAtom(clearShapesAtom)
+  const clearAllShapes = useSetAtom(clearShapesAtom);
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -29,10 +29,19 @@ export function DeleteElementsModal() {
         <DialogFooter className="sm:justify-start">
           <DialogClose asChild>
             <div className="flex gap-5">
-              <Button type="button" variant="secondary" className="outline-none border-none">
+              <Button
+                type="button"
+                variant="secondary"
+                className="outline-none border-none"
+              >
                 Close
               </Button>
-              <Button type="button" variant="destructive" className="bg-red-600" onClick={clearAllShapes}>
+              <Button
+                type="button"
+                variant="destructive"
+                className="bg-red-600"
+                onClick={clearAllShapes}
+              >
                 Confirm
               </Button>
             </div>
@@ -40,5 +49,5 @@ export function DeleteElementsModal() {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
