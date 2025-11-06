@@ -130,7 +130,9 @@ export function ShareSessionModal() {
   // User is in a room, is owner, and already sharing
   if (roomId && isOwner && isShared) {
     return (
-      <div className="bg-[#B2AEFF] text-black">Sharing..</div>
+      <Button variant="default" className="bg-[#B2AEFF] text-black">
+        Sharing..
+      </Button>
       // <Dialog>
       //   <DialogTrigger asChild>
       //     <Button variant="default" className="bg-[#B2AEFF] text-black">Stop Sharing</Button>
