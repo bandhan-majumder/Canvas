@@ -6,7 +6,6 @@ import { Github } from "lucide-react";
 import { Tool } from "@/types/tools";
 import { Game } from "@/draw/Game";
 import Link from "next/link";
-import { Button } from "./ui/button";
 import { ToolsBar } from "./ToolBar";
 import { useAtomValue, useSetAtom } from "jotai";
 import {
