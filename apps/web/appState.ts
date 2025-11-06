@@ -8,6 +8,18 @@ export const localStorageElementsAtom = atomWithStorage<CanvasElement[]>(
   [] // default value
 );
 
+export const localStorageUsernameAtom = atomWithStorage<string>(
+  STORAGE_KEYS.LOCAL_STORAGE_USERNAME,
+  '' // default value
+);
+
+export const addUsernameAtom = atom(
+  null, // no read
+  (get, set, username: string) => {
+    set(localStorageUsernameAtom, username);
+  }
+);
+
 // support for both single shape and multiple shapes
 export const addShapesAtom = atom(
   null, // no read
@@ -34,5 +46,12 @@ export const clearShapesAtom = atom(
   null,
   (get, set) => {
     set(localStorageElementsAtom, []);
+  }
+);
+
+export const clearUsernameAtom = atom(
+  null,
+  (get, set) => {
+    set(localStorageUsernameAtom, '');
   }
 );

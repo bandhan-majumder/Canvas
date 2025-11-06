@@ -20,18 +20,21 @@ export type Database = {
           elements: Json | null
           id: string
           isShared: boolean
+          randomUsername: string
         }
         Insert: {
           created_at?: string
           elements?: Json | null
           id?: string
           isShared?: boolean
+          randomUsername: string
         }
         Update: {
           created_at?: string
           elements?: Json | null
           id?: string
           isShared?: boolean
+          randomUsername?: string
         }
         Relationships: []
       }

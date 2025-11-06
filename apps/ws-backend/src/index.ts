@@ -1,6 +1,21 @@
 import { WebSocket as WebSocketType, WebSocketServer } from 'ws';
+import http from 'http';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
-const wss = new WebSocketServer({ port: process.env.PORT ? Number(process.env.PORT) : 8081 });
+const PORT = process.env.PORT ? Number(process.env.PORT) : 8081;
+
+const server = http.createServer((req, res) => {
+    if (req.url === '/health') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ status: 'ok', uptime: process.uptime() }));
+    } else {
+        res.writeHead(404);
+        res.end('Not Found');
+    }
+});
+
+const wss = new WebSocketServer({ server });
 
 interface Room {
     sockets: WebSocketType[]
@@ -34,6 +49,18 @@ relayerSocket.on('message', (data) => {
                         s.send(data.toString());
                     }
                 });
+            }
+        } else if (parsedData.type === 'clear-room') {
+            const room = parsedData.room;
+            if (rooms[room]) {
+                rooms[room].sockets.forEach(s => {
+                    if (s.readyState === WebSocketType.OPEN) {
+                        s.send(data.toString());
+                        s.close();
+                    }
+                });
+                delete rooms[room];
+                console.log(`Room ${room} cleared and deleted`);
             }
         }
     } catch (error) {
@@ -86,4 +113,6 @@ wss.on('connection', function (ws) {
     });
 });
 
-console.log(`WebSocket server running on port ${process.env.PORT || 8081}`);
+server.listen(PORT, () => {
+    console.log(`HTTP + WebSocket server running on port ${PORT}`);
+});

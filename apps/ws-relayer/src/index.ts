@@ -1,8 +1,21 @@
 import { WebSocket, WebSocketServer } from 'ws';
+import http from 'http';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-const wss = new WebSocketServer({ port: process.env.PORT ? Number(process.env.PORT) : 8080 });
+const PORT = process.env.PORT ? Number(process.env.PORT) : 8080;
+
+const server = http.createServer((req, res) => {
+    if (req.url === '/health') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ status: 'ok', uptime: process.uptime() }));
+    } else {
+        res.writeHead(404);
+        res.end('Not Found');
+    }
+});
+
+const wss = new WebSocketServer({ server });
 
 const servers: WebSocket[] = [];
 
@@ -29,4 +42,6 @@ wss.on('connection', function (ws) {
     });
 });
 
-console.log(`Relayer WebSocket server running on port ${process.env.PORT || 8080}`);
+server.listen(PORT, () => {
+    console.log(`HTTP + WebSocket relayer server running on port ${PORT}`);
+});
