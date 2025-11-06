@@ -66,7 +66,7 @@ export class Game {
 
     // Clear the canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.fillStyle = "rgb(17, 16, 17)";
+    this.ctx.fillStyle = "rgb(255, 255, 240)";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Apply the scale transformation
@@ -80,7 +80,7 @@ export class Game {
     this.ctx.translate(this.offsetX, this.offsetY);
 
     // Draw shapes
-    this.ctx.strokeStyle = "rgba(255, 255, 255)";
+    this.ctx.strokeStyle = "rgb(17, 16, 17)";
 
     this.existingShapes.forEach((shape) => {
       if (shape.type === "rect") {
@@ -245,7 +245,7 @@ export class Game {
       // Apply pan offset
       this.ctx.translate(this.offsetX, this.offsetY);
 
-      this.ctx.strokeStyle = "rgba(255, 255, 255)";
+      this.ctx.strokeStyle = "rgb(17, 16, 17)";
 
       if (this.selectedTool === Tool.Square) {
         this.ctx.strokeRect(this.startX, this.startY, width, height);

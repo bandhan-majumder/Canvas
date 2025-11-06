@@ -11,7 +11,7 @@ export function ToolsBar({
   setSelectedTool: (tool: Tool) => void;
 }) {
   return (
-    <div className="bg-[#232329] p-2 rounded-xl shadow-md">
+    <div className="bg-[#fafaf0] p-2 rounded-xl shadow-lg shadow-">
       <div className="flex gap-2">
         <IconButton
           icon={<Minus />}

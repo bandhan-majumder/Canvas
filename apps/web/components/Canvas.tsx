@@ -186,11 +186,9 @@ export default function Canvas({ prevElements, onShapeAdded, roomId }: CanvasPro
         <Link
           href={"https://github.com/bandhan-majumder/Canvas"}
           target="blank"
-          className="cursor-pointer"
+          className="cursor-pointer flex justify-center items-center flex-col"
         >
-          <Button className="bg-white" variant={"link"}>
-            <Github />
-          </Button>
+          <Github size={25} />
         </Link>
         <ShareSessionModal />
         <DeleteElementsModal />
