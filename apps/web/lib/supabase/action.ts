@@ -1,15 +1,25 @@
 import { CanvasElement } from '@/types/shape';
-import { importFromLocalStorage } from '@/hooks/use-localstorage';
 import { supabase } from '@/lib/supabase/supbase-client';
 
-export async function createRoomWithElements(): Promise<string | null> {
-    const { savedElements } = importFromLocalStorage();
-    try {
-        const { data, error } = await supabase
-            .from('rooms')
-            .insert({
-                elements: JSON.stringify(savedElements)
-            }).select('id');
+interface createRoomProps {
+  savedElements: CanvasElement[],
+  userName: string | null
+}
+export async function createRoomWithElements({
+  savedElements, userName
+}: createRoomProps): Promise<string | null> {
+  if (!userName) {
+    throw new Error("Username is not generated!")
+  };
+
+  try {
+    const { data, error } = await supabase
+      .from('rooms')
+      .insert({
+        elements: JSON.stringify(savedElements),
+        randomUsername: userName,
+        isShared: true
+      }).select('id');
 
         if (error){
             throw new Error(error.message);
@@ -101,8 +111,46 @@ export async function roomExists(roomId: string): Promise<boolean> {
     }
 }
 
-// Check if shared
-export async function isRoomShared(roomId: string): Promise<boolean> {
+// Check if user is the room owner or not and it's on shared state or not
+export async function isRoomOwner(roomId: string, username: string): Promise<boolean> {
+  try {
+    const { data, error } = await supabase
+      .from('rooms')
+      .select('isShared')
+      .eq('id', roomId)
+      .eq('randomUsername', username)
+      .single();
+
+    if (error) {
+      throw new Error(`User not room owner: ${error.message}`);
+    }
+
+    return data ? data.isShared : false;
+  } catch (error) {
+    console.error('Error checking if room is shared:', error);
+    throw error;
+  }
+}
+
+export async function stopSharingRoom(roomId: string): Promise<void> {
+  try {
+    const { error } = await supabase
+      .from('rooms')
+      .update({
+        isShared: false
+      }).eq('id', roomId)
+
+    if (error) {
+      throw new Error(`Failed to update room: ${error.message}`);
+    }
+  } catch (error) {
+    console.error('Failed to update room: ', error);
+    throw error;
+  }
+}
+
+// Check if user is the room owner or not and it's on shared state or not
+export async function isRoomSharing(roomId: string): Promise<boolean> {
   try {
     const { data, error } = await supabase
       .from('rooms')
@@ -111,7 +159,7 @@ export async function isRoomShared(roomId: string): Promise<boolean> {
       .single();
 
     if (error) {
-      throw new Error(`Failed to fetch room: ${error.message}`);
+      throw new Error(`Error finding shared room: ${error.message}`);
     }
 
     return data ? data.isShared : false;

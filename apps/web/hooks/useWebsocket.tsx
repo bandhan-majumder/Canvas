@@ -7,7 +7,7 @@ interface UseWebSocketProps {
 }
 
 interface WebSocketMessage {
-  type: 'join-room' | 'chat';
+  type: 'join-room' | 'chat' | 'clear-room';
   room?: string;
   object?: string;
   shapes?: CanvasElement[];
@@ -91,6 +91,22 @@ export function useWebSocket({
       }
     }
   }, [roomId, isConnected]);
+
+  // const clearRoomAndSockets = useCallback((roomId: string) => {
+  //   console.log("inside clear room and sockets: ", roomId);
+  //   if (wsRef.current && roomId) {
+  //     const message: WebSocketMessage = {
+  //       type: 'clear-room',
+  //       room: roomId
+  //     }
+
+  //     try {
+  //       wsRef.current.send(JSON.stringify(message));
+  //     } catch (error) {
+  //       console.error('Error sending shape: ', error);
+  //     }
+  //   }
+  // }, [roomId]);
 
   useEffect(() => {
     if (roomId) {

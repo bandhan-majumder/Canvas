@@ -9,7 +9,7 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import { ToolsBar } from "./ToolBar";
 import { useAtomValue, useSetAtom } from "jotai";
-import { localStorageElementsAtom, addShapesAtom } from "@/appState";
+import { localStorageElementsAtom, addShapesAtom, localStorageUsernameAtom } from "@/appState";
 import { CanvasElement } from "@/types/shape";
 import { STORAGE_KEYS } from "@/lib/constants";
 import { DeleteElementsModal } from "./DeleteElementsModal";
@@ -29,6 +29,7 @@ export default function Canvas({ prevElements, onShapeAdded, roomId }: CanvasPro
   
   // Read shapes from localStorage via Jotai
   const shapes = useAtomValue(localStorageElementsAtom);
+  const storedUsername = useAtomValue(localStorageUsernameAtom);
   const addShape = useSetAtom(addShapesAtom);
 
   // if drawing exist in a new room, add that to the current state
@@ -46,8 +47,16 @@ export default function Canvas({ prevElements, onShapeAdded, roomId }: CanvasPro
     const checkInterval = setInterval(() => {
       try {
         const stored = localStorage.getItem(STORAGE_KEYS.LOCAL_STORAGE_ELEMENTS);
+        const username = localStorage.getItem(STORAGE_KEYS.LOCAL_STORAGE_USERNAME);
+
+        // sync elements
         if (stored === null && shapes.length > 0) {
           localStorage.setItem(STORAGE_KEYS.LOCAL_STORAGE_ELEMENTS, JSON.stringify(shapes));
+        }
+
+        // sync username
+        if (storedUsername && storedUsername !== username) {
+          localStorage.setItem(STORAGE_KEYS.LOCAL_STORAGE_USERNAME, storedUsername);
         }
       } catch (e) {
         console.error('Error restoring localStorage:', e);
@@ -57,7 +66,7 @@ export default function Canvas({ prevElements, onShapeAdded, roomId }: CanvasPro
     return () => {
       clearInterval(checkInterval);
     };
-  }, [shapes, roomId]);
+  }, [shapes, roomId, storedUsername]);
 
   useEffect(() => {
     if (selectedTool && game) {
@@ -87,7 +96,7 @@ export default function Canvas({ prevElements, onShapeAdded, roomId }: CanvasPro
         g.destroy();
       };
     }
-  }, [canvasRef]);
+  }, [canvasRef, addShape]);
 
   // Update game shapes when localStorage changes
   useEffect(() => {
