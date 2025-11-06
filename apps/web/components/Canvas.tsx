@@ -189,7 +189,7 @@ export default function Canvas({
         style={{ touchAction: "none" }}
       />
 
-      <div className="fixed top-4 left-5/12">
+      <div className="fixed bottom-4 left-5/12">
         <ToolsBar
           selectedTool={selectedTool}
           setSelectedTool={setSelectedTool}

@@ -66,7 +66,7 @@ export class Game {
 
     // Clear the canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.fillStyle = "rgb(255, 255, 240)";
+    this.ctx.fillStyle = "rgb(250, 249, 246)";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Apply the scale transformation
