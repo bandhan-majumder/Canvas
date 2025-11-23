@@ -18,8 +18,8 @@ export async function createRoomWithElements({
       .from("rooms")
       .insert({
         elements: JSON.stringify(savedElements),
-        randomUsername: userName,
-        isShared: true,
+        randomusername: userName,
+        isshared: true,
       })
       .select("id");
 
@@ -123,16 +123,16 @@ export async function isRoomOwner(
   try {
     const { data, error } = await supabase
       .from("rooms")
-      .select("isShared")
+      .select("isshared")
       .eq("id", roomId)
-      .eq("randomUsername", username)
+      .eq("randomusername", username)
       .single();
 
     if (error) {
       throw new Error(`User not room owner: ${error.message}`);
     }
 
-    return data ? data.isShared : false;
+    return data ? data.isshared : false;
   } catch (error) {
     console.error("Error checking if room is shared:", error);
     throw error;
@@ -144,7 +144,7 @@ export async function stopSharingRoom(roomId: string): Promise<void> {
     const { error } = await supabase
       .from("rooms")
       .update({
-        isShared: false,
+        isshared: false,
       })
       .eq("id", roomId);
 
@@ -162,7 +162,7 @@ export async function isRoomSharing(roomId: string): Promise<boolean> {
   try {
     const { data, error } = await supabase
       .from("rooms")
-      .select("isShared")
+      .select("isshared")
       .eq("id", roomId)
       .single();
 
@@ -170,7 +170,7 @@ export async function isRoomSharing(roomId: string): Promise<boolean> {
       throw new Error(`Error finding shared room: ${error.message}`);
     }
 
-    return data ? data.isShared : false;
+    return data ? data.isshared : false;
   } catch (error) {
     console.error("Error checking if room is shared:", error);
     throw error;

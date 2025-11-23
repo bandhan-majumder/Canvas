@@ -4,6 +4,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 8081;
+const RELAYER_URL = process.env.RELAYER_URL;
 
 const server = http.createServer((req, res) => {
   if (req.url === "/health") {
@@ -24,7 +25,7 @@ interface Room {
 const rooms: Record<string, Room> = {};
 
 const relayerSocket = new WebSocketType(
-  process.env.RELAYER_URL ? process.env.RELAYER_URL : "ws://localhost:8080",
+  RELAYER_URL ? RELAYER_URL : "ws://localhost:8080",
 );
 
 relayerSocket.on("open", () => {
