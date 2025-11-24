@@ -201,7 +201,7 @@ export default function Canvas({
           target="blank"
           className="cursor-pointer flex justify-center items-center flex-col"
         >
-          <Github size={25} />
+          <Github size={25} color="white" />
         </Link>
         <ShareSessionModal />
         <DeleteElementsModal />
