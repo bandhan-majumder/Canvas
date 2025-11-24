@@ -7,29 +7,28 @@
 ```
 git clone https://github.com/bandhan-majumder/Canvas
 cd Canvas
-npm install
+pnpm install
 ```
 
 Copy the .env.sample files and setup the db url and password
 
 ```
 cp apps/web/.env.sample apps/web/.env
+cp apps/ws-backend/.env.sample apps/ws-backend/.env
+cp apps/ws-relayer/.env.sample apps/ws-relayer/.env
 cp packages/db/.env.sample packages/db/.env
 ```
 
-go to the root directory and run
-
+go to the root directory and run the below command. But make sure the relayer starts first, else ws-backend may fail
 ```
-cd ../..
-npm run dev
+pnpm run dev
 ```
 
-## This turbo repo contains 2 main projects
+## This turbo repo contains 3 main projects
 
 1. Web
-2. Websocket backend
-
-- Websocket backend is deployed on render.
+2. Websocket backend 1 (relayer)
+3. Websocket backend 2
 
 ## Features
 
@@ -42,7 +41,7 @@ npm run dev
 
 1. Turbo repo, nextjs, next-auth
 2. Websocket
-3. Prisma, Postgres
+3. Drizzle, Postgres
 
 ## Deployed on
 

@@ -13,7 +13,7 @@ export function IconButton({
 }) {
   return (
     <div
-      className={`cursor-pointer rounded-lg ${isBorder ? "border" : ""} p-2 hover:bg-[#2E2D39] ${activated ? "bg-[#403E6A] text-white" : "text-white"}`}
+      className={`cursor-pointer rounded-lg ${isBorder ? "border" : ""} p-2 ${!activated ? "hover:bg-[#2E2D39]" : "hover:"} ${activated ? "bg-[#403E6A] text-white" : "text-white"}`}
       onClick={onClick}
     >
       {icon}
