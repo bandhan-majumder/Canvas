@@ -1,4 +1,4 @@
-import { getElementsByRoomId } from "@/lib/supabase/action";
+import { getElementsByRoomId } from "@/lib/db/queries";
 import { redirect } from "next/navigation";
 import RoomClient from "@/components/RoomClient";
 

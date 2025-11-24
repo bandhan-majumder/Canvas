@@ -19,6 +19,7 @@
     "node": ">=22"
   },
   "dependencies": {
-    "@types/node": "^24.9.2"
+    "@types/node": "^24.9.2",
+    "drizzle-orm": "^0.44.7"
   }
 }

@@ -3,7 +3,7 @@ import http from "http";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const PORT = process.env.PORT ? Number(process.env.PORT) : 8080;
+const PORT = 8080;
 
 const server = http.createServer((req, res) => {
   if (req.url === "/health") {

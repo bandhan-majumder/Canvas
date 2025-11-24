@@ -10,7 +10,7 @@ import {
   addShapesAtom,
   replaceShapesAtom,
 } from "@/appState";
-import { updateRoomElements } from "@/lib/supabase/action";
+import axios from "axios";
 
 interface RoomClientProps {
   roomId: string;
@@ -56,7 +56,9 @@ export default function RoomClient({
 
     const syncToSupabase = async () => {
       try {
-        await updateRoomElements(roomId, shapes);
+        await axios.put(`/api/room/${roomId}`, {
+          elements: shapes,
+        });
         lastSyncedShapesRef.current = shapes;
       } catch (error) {
         console.error("Error syncing to Supabase:", error);

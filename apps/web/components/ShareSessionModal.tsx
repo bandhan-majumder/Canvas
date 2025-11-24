@@ -1,3 +1,5 @@
+"use client";
+
 import { addUsernameAtom, localStorageElementsAtom } from "@/appState";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,15 +14,11 @@ import {
 } from "@/components/ui/dialog";
 import { STORAGE_KEYS } from "@/lib/constants";
 import { generateRandomUsername } from "@/lib/random-username";
-import { createRoomWithElements, isRoomOwner } from "@/lib/supabase/action";
+import axios from "axios";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-
-// interface ShareSessionModalProps {
-//   onStopSharing?: () => void;
-// }
 
 export function ShareSessionModal() {
   const router = useRouter();
@@ -29,6 +27,7 @@ export function ShareSessionModal() {
 
   const [isOwner, setIsOwner] = useState(false);
   const [isShared, setIsShared] = useState(false);
+  const [clickedShared, setClickedShared] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userName, setUserName] = useState<string>("");
   const savedElements = useAtomValue(localStorageElementsAtom);
@@ -65,7 +64,10 @@ export function ShareSessionModal() {
       }
 
       try {
-        const isRoomShared = await isRoomOwner(roomId, userName);
+        const response = await axios.get(
+          `/api/room/${roomId}/owner?username=${userName}`,
+        );
+        const isRoomShared = response.data.isOwner;
         setIsShared(isRoomShared);
         setIsOwner(true);
       } catch {
@@ -79,6 +81,7 @@ export function ShareSessionModal() {
   }, [userName, roomId]);
 
   async function onShareHandler(): Promise<void> {
+    setClickedShared(true);
     let finalUsername = userName;
 
     if (!userName) {
@@ -87,41 +90,33 @@ export function ShareSessionModal() {
       finalUsername = randomUsername;
     }
 
-    const newRoomId = await createRoomWithElements({
-      savedElements,
-      userName: finalUsername,
-    });
+    try {
+      const response = await axios.post("/api/room/create", {
+        savedElements,
+        userName: finalUsername,
+      });
 
-    if (newRoomId) {
-      const shareUrl = `${window.location.origin}/room/${newRoomId}`;
-      navigator.clipboard.writeText(shareUrl);
-      toast.success("URL copied to your clipboard!");
-      router.push(`/room/${newRoomId}`);
-    } else {
+      const newRoomId = response.data.roomId;
+
+      if (newRoomId) {
+        const shareUrl = `${window.location.origin}/room/${newRoomId}`;
+
+        // to avoid the document not focused problem while copying text
+        await window.focus();
+        await navigator.clipboard.writeText(shareUrl);
+
+        toast.success("URL copied to your clipboard!");
+        router.push(`/room/${newRoomId}`);
+      } else {
+        toast.error("Failed to create a session. Please try again later!");
+      }
+    } catch (error) {
+      console.error("Error creating room:", error);
       toast.error("Failed to create a session. Please try again later!");
+    } finally {
+      setClickedShared(false);
     }
   }
-
-  // async function onStopShareHandler(): Promise<void> {
-  //   if (!roomId) return;
-
-  //   try {
-
-  //     onStopSharing?.();
-
-  //     await stopSharingRoom(roomId);
-
-  //     setIsShared(false);
-  //     toast.success("Stopped sharing session. All collaborators disconnected.");
-
-  //     setTimeout(() => {
-  //       router.push('/');
-  //     }, 500);
-  //   } catch (error) {
-  //     console.error('Error stopping share:', error);
-  //     toast.error("Failed to stop sharing. Please try again.");
-  //   }
-  // }
 
   if (isLoading) {
     return null;
@@ -130,33 +125,9 @@ export function ShareSessionModal() {
   // User is in a room, is owner, and already sharing
   if (roomId && isOwner && isShared) {
     return (
-      <Button variant="default" className="bg-[#B2AEFF] text-black">
+      <Button variant="default" className="bg-[#B2AEFF] text-black" disabled>
         Sharing..
       </Button>
-      // <Dialog>
-      //   <DialogTrigger asChild>
-      //     <Button variant="default" className="bg-[#B2AEFF] text-black">Stop Sharing</Button>
-      //   </DialogTrigger>
-      //   <DialogContent className="sm:max-w-md bg-[#303030] text-white border-gray-100 outline-none">
-      //     <DialogHeader>
-      //       <DialogTitle>Stop sharing session?</DialogTitle>
-      //       <DialogDescription>
-      //         Once you stop sharing, all collaborators will be disconnected and the room will be cleared.
-      //         Their work will be saved to their local storage.
-      //       </DialogDescription>
-      //     </DialogHeader>
-      //     <DialogFooter className="sm:justify-start">
-      //       <DialogClose asChild>
-      //         <div className="flex gap-5">
-      //           <Button type="button" variant="secondary">Close</Button>
-      //           <Button type="button" variant="destructive" onClick={onStopShareHandler}>
-      //             Confirm
-      //           </Button>
-      //         </div>
-      //       </DialogClose>
-      //     </DialogFooter>
-      //   </DialogContent>
-      // </Dialog>
     );
   }
 
@@ -165,7 +136,7 @@ export function ShareSessionModal() {
     return (
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="default" className="bg-[#B2AEFF] text-black">
+          <Button variant="default" className="bg-[#B2AEFF] text-black" disabled={clickedShared}>
             Share
           </Button>
         </DialogTrigger>

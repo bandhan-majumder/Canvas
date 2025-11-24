@@ -3,7 +3,7 @@ import http from "http";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const PORT = process.env.PORT ? Number(process.env.PORT) : 8081;
+const PORT = 8081;
 const RELAYER_URL = process.env.RELAYER_URL;
 
 const server = http.createServer((req, res) => {
