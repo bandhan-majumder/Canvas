@@ -1,6 +1,7 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import { CanvasElement } from "@/types/shape";
+import { CanvasViewState } from "@/types/view";
 import { STORAGE_KEYS } from "@/lib/constants";
 
 export const localStorageElementsAtom = atomWithStorage<CanvasElement[]>(
@@ -11,6 +12,15 @@ export const localStorageElementsAtom = atomWithStorage<CanvasElement[]>(
 export const localStorageUsernameAtom = atomWithStorage<string>(
   STORAGE_KEYS.LOCAL_STORAGE_USERNAME,
   "", // default value
+);
+
+export const canvasViewStateAtom = atomWithStorage<CanvasViewState>(
+  STORAGE_KEYS.LOCAL_STORAGE_CANVAS_VIEW,
+  {
+    offsetX: 0,
+    offsetY: 0,
+    scale: 1,
+  }
 );
 
 export const addUsernameAtom = atom(
@@ -49,3 +59,10 @@ export const clearShapesAtom = atom(null, (get, set) => {
 export const clearUsernameAtom = atom(null, (get, set) => {
   set(localStorageUsernameAtom, "");
 });
+
+export const updateCanvasViewAtom = atom(
+  null,
+  (get, set, viewState: CanvasViewState) => {
+    set(canvasViewStateAtom, viewState);
+  },
+);

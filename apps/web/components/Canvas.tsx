@@ -12,6 +12,8 @@ import {
   localStorageElementsAtom,
   addShapesAtom,
   localStorageUsernameAtom,
+  canvasViewStateAtom, 
+  updateCanvasViewAtom, 
 } from "@/appState";
 import { CanvasElement } from "@/types/shape";
 import { STORAGE_KEYS } from "@/lib/constants";
@@ -37,7 +39,9 @@ export default function Canvas({
   // Read shapes from localStorage via Jotai
   const shapes = useAtomValue(localStorageElementsAtom);
   const storedUsername = useAtomValue(localStorageUsernameAtom);
+  const canvasViewState = useAtomValue(canvasViewStateAtom); 
   const addShape = useSetAtom(addShapesAtom);
+  const updateCanvasView = useSetAtom(updateCanvasViewAtom); 
 
   // if drawing exist in a new room, add that to the current state
   useEffect(() => {
@@ -103,13 +107,18 @@ export default function Canvas({
         }
       };
 
-      const g = new Game(canvasRef.current, shapes, handleNewShape);
+      const g = new Game(
+        canvasRef.current,
+        shapes,
+        handleNewShape,
+        canvasViewState 
+      );
       setGame(g);
       return () => {
         g.destroy();
       };
     }
-  }, [canvasRef, addShape]);
+  }, [canvasRef, addShape, canvasViewState]);
 
   // Update game shapes when localStorage changes
   useEffect(() => {
@@ -138,7 +147,7 @@ export default function Canvas({
       document.removeEventListener("contextmenu", preventContextMenu);
   }, []);
 
-  // Add mouse wheel scrolling
+  // Add mouse wheel scrolling and persist view state changes
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !game) return;
@@ -170,6 +179,8 @@ export default function Canvas({
       if (game.panCamera) {
         game.panCamera(deltaX, deltaY);
       }
+
+      updateCanvasView(game.getViewState());
     };
 
     canvas.addEventListener("wheel", handleWheel, { passive: false });
@@ -177,7 +188,7 @@ export default function Canvas({
     return () => {
       canvas.removeEventListener("wheel", handleWheel);
     };
-  }, [game]);
+  }, [game, updateCanvasView]);
 
   return (
     <div className="h-full w-full relative">

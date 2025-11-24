@@ -1,5 +1,6 @@
 import { CanvasElement } from "@/types/shape";
 import { Tool } from "@/types/tools";
+import { CanvasViewState } from "@/types/view";
 
 export class Game {
   private canvas: HTMLCanvasElement;
@@ -21,12 +22,21 @@ export class Game {
     canvas: HTMLCanvasElement,
     initialShapes: CanvasElement[] = [],
     onShapeAdded?: (shape: CanvasElement) => void,
+    initialViewState?: CanvasViewState,
   ) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d")!;
     this.existingShapes = initialShapes;
     this.onShapeAdded = onShapeAdded;
     this.clicked = false;
+
+    // initialize view state of where user left off
+    if (initialViewState) {
+      this.offsetX = initialViewState.offsetX;
+      this.offsetY = initialViewState.offsetY;
+      this.scale = initialViewState.scale;
+    }
+
     this.init();
     this.initHandlers();
     this.initMouseHandlers();
@@ -78,7 +88,7 @@ export class Game {
         this.ctx.beginPath();
         this.ctx.arc(shape.centerX, shape.centerY, shape.radius, 0, Math.PI * 2);
         this.ctx.stroke();
-      } 
+      }
       else if (shape.type === "line") {
         this.ctx.beginPath();
         this.ctx.moveTo(shape.startX, shape.startY);
@@ -106,7 +116,7 @@ export class Game {
     this.ctx.stroke();
   }
 
-  initHandlers() {}
+  initHandlers() { }
 
   destroy() {
     this.canvas.removeEventListener("mousedown", this.mouseDownHandler);
@@ -158,7 +168,7 @@ export class Game {
 
     if (this.selectedTool === Tool.Square) {
       shape = { type: "rect", x: this.startX, y: this.startY, width, height };
-    } 
+    }
     else if (this.selectedTool === Tool.Circle) {
       const radius = Math.sqrt(width * width + height * height) / 2;
       shape = {
@@ -167,7 +177,7 @@ export class Game {
         centerX: (this.startX + endX) / 2,
         centerY: (this.startY + endY) / 2,
       };
-    } 
+    }
     else if (this.selectedTool === Tool.Line) {
       shape = {
         type: "line",
@@ -176,7 +186,7 @@ export class Game {
         endX,
         endY,
       };
-    } 
+    }
     else if (this.selectedTool === Tool.Diamond) {
       shape = {
         type: "diamond",
@@ -225,7 +235,7 @@ export class Game {
 
     if (this.selectedTool === Tool.Square) {
       this.ctx.strokeRect(this.startX, this.startY, width, height);
-    } 
+    }
     else if (this.selectedTool === Tool.Circle) {
       const radius = Math.sqrt(width * width + height * height) / 2;
       const cx = (this.startX + currentX) / 2;
@@ -233,13 +243,13 @@ export class Game {
       this.ctx.beginPath();
       this.ctx.arc(cx, cy, radius, 0, Math.PI * 2);
       this.ctx.stroke();
-    } 
+    }
     else if (this.selectedTool === Tool.Line) {
       this.ctx.beginPath();
       this.ctx.moveTo(this.startX, this.startY);
       this.ctx.lineTo(currentX, currentY);
       this.ctx.stroke();
-    } 
+    }
     else if (this.selectedTool === Tool.Diamond) {
       this.drawDiamond(this.startX, this.startY, width, height);
     }
@@ -264,4 +274,12 @@ export class Game {
     if (this.scale < this.maxZoomout) this.scale = this.maxZoomout;
     this.clearAndRenderCanvas();
   };
+
+  getViewState(): CanvasViewState {
+    return {
+      offsetX: this.offsetX,
+      offsetY: this.offsetY,
+      scale: this.scale,
+    };
+  }
 }
