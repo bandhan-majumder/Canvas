@@ -5,8 +5,8 @@ dotenv.config();
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 8080;
 
-const RATE_LIMIT_WINDOW_MS = 1000; 
-const MAX_MESSAGES_PER_WINDOW = 100; 
+const RATE_LIMIT_WINDOW_MS = 1000;
+const MAX_MESSAGES_PER_WINDOW = 100;
 const MAX_CONNECTIONS_PER_IP = 10;
 
 const server = http.createServer((req, res) => {
@@ -74,7 +74,7 @@ setInterval(() => {
 
 wss.on("connection", function (ws, req) {
   const clientIP = getClientIP(req);
-  
+
   const currentConnections = connectionCounts.get(clientIP) || 0;
 
   if (currentConnections >= MAX_CONNECTIONS_PER_IP) {
@@ -99,6 +99,12 @@ wss.on("connection", function (ws, req) {
     }
 
     const messageStr = data.toString();
+
+    // for debugging
+    if (messageStr === "ping") {
+      ws.send(JSON.stringify({ type: "pong" }));
+      return;
+    }
 
     servers.forEach((s) => {
       if (s.readyState === WebSocket.OPEN) {

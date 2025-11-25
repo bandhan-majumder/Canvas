@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useCallback, useState } from "react";
 import { CanvasElement } from "@/types/shape";
+import { NEXT_PUBLIC_WS_URL } from "@/config";
 
 interface UseWebSocketProps {
   roomId: string | null;
@@ -28,7 +29,7 @@ export function useWebSocket({ roomId, onShapeReceived }: UseWebSocketProps) {
 
     try {
       const ws = new WebSocket(
-        process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8081",
+        NEXT_PUBLIC_WS_URL
       );
       wsRef.current = ws;
 

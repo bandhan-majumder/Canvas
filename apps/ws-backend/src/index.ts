@@ -151,6 +151,12 @@ wss.on("connection", function (ws, req) {
     try {
       const parsedData = JSON.parse(data.toString());
 
+      // for debugging
+      if (parsedData.type === "ping") {
+        ws.send(JSON.stringify({ type: "pong" }));
+        return;
+      }
+
       if (parsedData.type === "join-room") {
         const room = parsedData.room;
 
