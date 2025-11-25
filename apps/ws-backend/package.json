@@ -16,7 +16,6 @@
     "ws": "^8.18.1"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
     "@types/ws": "^8.18.1"
   }
 }
