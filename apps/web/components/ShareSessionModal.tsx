@@ -16,6 +16,7 @@ import { STORAGE_KEYS } from "@/lib/constants";
 import { generateRandomUsername } from "@/lib/random-username";
 import axios from "axios";
 import { useAtomValue, useSetAtom } from "jotai";
+import { Loader } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -136,8 +137,8 @@ export function ShareSessionModal() {
     return (
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="default" className="bg-[#B2AEFF] text-black" disabled={clickedShared}>
-            Share
+          <Button variant="default" className="bg-[#B2AEFF] w-[70px] text-black" disabled={clickedShared}>
+            {!clickedShared ? 'Share' : <Loader color="black" size={10} />}
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-md bg-[#303030] text-white border-gray-100 outline-none">

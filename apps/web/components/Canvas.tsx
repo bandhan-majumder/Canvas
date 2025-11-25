@@ -12,8 +12,8 @@ import {
   localStorageElementsAtom,
   addShapesAtom,
   localStorageUsernameAtom,
-  canvasViewStateAtom, 
-  updateCanvasViewAtom, 
+  canvasViewStateAtom,
+  updateCanvasViewAtom,
 } from "@/appState";
 import { CanvasElement } from "@/types/shape";
 import { STORAGE_KEYS } from "@/lib/constants";
@@ -39,9 +39,9 @@ export default function Canvas({
   // Read shapes from localStorage via Jotai
   const shapes = useAtomValue(localStorageElementsAtom);
   const storedUsername = useAtomValue(localStorageUsernameAtom);
-  const canvasViewState = useAtomValue(canvasViewStateAtom); 
+  const canvasViewState = useAtomValue(canvasViewStateAtom);
   const addShape = useSetAtom(addShapesAtom);
-  const updateCanvasView = useSetAtom(updateCanvasViewAtom); 
+  const updateCanvasView = useSetAtom(updateCanvasViewAtom);
 
   // if drawing exist in a new room, add that to the current state
   useEffect(() => {
@@ -111,7 +111,7 @@ export default function Canvas({
         canvasRef.current,
         shapes,
         handleNewShape,
-        canvasViewState 
+        canvasViewState
       );
       setGame(g);
       return () => {
@@ -207,15 +207,17 @@ export default function Canvas({
         />
       </div>
       <div className="fixed top-4 right-10 flex gap-4">
-        <Link
-          href={"https://github.com/bandhan-majumder/Canvas"}
-          target="blank"
-          className="cursor-pointer flex justify-center items-center flex-col"
-        >
-          <Github size={25} color="white" />
-        </Link>
+
         <ShareSessionModal />
         <DeleteElementsModal />
+        <div className="cursor-pointer flex justify-center items-center flex-col bg-[#1E2939] w-10 rounded-full">
+          <Link
+            href={"https://github.com/bandhan-majumder/Canvas"}
+            target="blank"
+          >
+            <Github size={25} color="white" />
+          </Link>
+        </div>
       </div>
     </div>
   );
