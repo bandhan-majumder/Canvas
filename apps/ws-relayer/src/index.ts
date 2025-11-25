@@ -100,12 +100,6 @@ wss.on("connection", function (ws, req) {
 
     const messageStr = data.toString();
 
-    // for debugging
-    if (messageStr === "ping") {
-      ws.send(JSON.stringify({ type: "pong from ws-relayer" }));
-      return;
-    }
-
     servers.forEach((s) => {
       if (s.readyState === WebSocket.OPEN) {
         s.send(messageStr);
