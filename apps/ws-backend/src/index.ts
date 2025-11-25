@@ -153,7 +153,7 @@ wss.on("connection", function (ws, req) {
 
       // for debugging
       if (parsedData.type === "ping") {
-        ws.send(JSON.stringify({ type: "pong" }));
+        ws.send(JSON.stringify({ type: "pong from ws-backend" }));
         return;
       }
 
