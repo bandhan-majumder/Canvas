@@ -50,5 +50,5 @@ jobs:
           sudo ln -sf \"\$NVM_DIR/versions/node/\$(nvm version)/bin/npm\" \"/usr/local/bin/npm\" && 
           sudo ln -sf \"\$NVM_DIR/versions/node/\$(nvm version)/bin/pm2\" \"/usr/local/bin/pm2\" && 
 
-          rm -rf canvas && rm -rf ws-backend && rm -rf ws-relayer && git clone https://github.com/bandhan-majumder/canvas && cd canvas && cp -r app/ws-backend ../ && cp -r app/ws-relayer ../ && cd .. && npm install -g pnpm && pm2 kill && cd ws-relayer && pnpm install && pnpm build && pm2 start pnpm --name "ws-relayer" -- start && cd .. && cd ws-backend && pnpm install && pnpm build && pm2 start pnpm --name "ws-backend" -- start
+          rm -rf canvas && rm -rf ws-backend && rm -rf ws-relayer && git clone https://github.com/bandhan-majumder/canvas && cd canvas && cp -r apps/ws-backend ../ && cp -r apps/ws-relayer ../ && cd .. && npm install -g pnpm && pm2 kill && cd ws-relayer && pnpm install && pnpm build && pm2 start pnpm --name "ws-relayer" -- start && cd .. && cd ws-backend && pnpm install && pnpm build && pm2 start pnpm --name "ws-backend" -- start
         "
