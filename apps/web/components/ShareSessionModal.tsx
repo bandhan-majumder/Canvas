@@ -88,6 +88,9 @@ export function ShareSessionModal() {
     if (!userName) {
       const randomUsername = generateRandomUsername();
       appUsernameAtom(randomUsername);
+
+      localStorage.setItem(STORAGE_KEYS.LOCAL_STORAGE_USERNAME, randomUsername);
+      setUserName(randomUsername);
       finalUsername = randomUsername;
     }
 
