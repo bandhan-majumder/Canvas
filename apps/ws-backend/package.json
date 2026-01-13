@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "pnpm build && pnpm start",
+    "dev": "bun run build && bun start",
     "build": "tsc -b",
     "start": "node dist/index.js"
   },
