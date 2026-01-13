@@ -44,15 +44,17 @@ jobs:
 
           echo 'Stopping old containers'
           sudo docker stop canvas-ws-be || true
+          sudo docker rm canvas-ws-be || true
+          sudo docker stop canvas-ws-relayer || true
           sudo docker rm canvas-ws-relayer || true
-
-          echo 'Deleting the image'
-          sudo docker rmi canvas-ws-be-img || true
-          sudo docker rmi canvas-ws-relayer-img || true
-
-          echo 'Building image'
-          sudo docker build -t canvas-ws-relayer-img -f apps/ws-relayer/Dockerfile .
-          sudo docker build -t canvas-ws-be-img -f apps/ws-backend/Dockerfile .
+          
+          echo 'Deleting old images'
+          sudo docker rmi canvas-ws-be-img:latest || true
+          sudo docker rmi canvas-ws-relayer-img:latest || true
+          
+          echo 'Building images'
+          sudo docker build -t canvas-ws-relayer-img:latest -f apps/ws-relayer/Dockerfile .
+          sudo docker build -t canvas-ws-be-img:latest -f apps/ws-backend/Dockerfile .
 
           echo 'Running relayer container'
           sudo docker run -d \
@@ -61,7 +63,7 @@ jobs:
             --env-file /home/ubuntu/canvas/.env.server \
             canvas-ws-relayer-img:latest
           
-          echo 'Running relayer container'
+          echo 'Running backend container'
           sudo docker run -d \
             --net=host \
             --name canvas-ws-be \
