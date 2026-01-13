@@ -3,7 +3,7 @@ import http from "http";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const PORT = process.env.PORT ? Number(process.env.PORT) : 8080;
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3002;
 
 const RATE_LIMIT_WINDOW_MS = 1000;
 const MAX_MESSAGES_PER_WINDOW = 100;

@@ -11,22 +11,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
+      - uses: oven-sh/setup-bun@v2
         with:
-          version: 8
-          
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-          cache: 'pnpm'
+          bun-version: latest
         
       - name: Install Dependencies
-        run: pnpm install
+        run: bun install
 
       - name: Run Build
-        run: pnpm run build
+        run: bun run build
 
   deploy:
     runs-on: ubuntu-latest
@@ -43,12 +36,35 @@ jobs:
     - name: Create symlinks and deploy to EC2
       run: |
         ssh ubuntu@${{ secrets.EC2_PUBLIC_IP }} -t "
-          export NVM_DIR=\"\$HOME/.nvm\" && 
-          [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\" && 
-          
-          sudo ln -sf \"\$NVM_DIR/versions/node/\$(nvm version)/bin/node\" \"/usr/local/bin/node\" && 
-          sudo ln -sf \"\$NVM_DIR/versions/node/\$(nvm version)/bin/npm\" \"/usr/local/bin/npm\" && 
-          sudo ln -sf \"\$NVM_DIR/versions/node/\$(nvm version)/bin/pm2\" \"/usr/local/bin/pm2\" && 
+          set -e
 
-          rm -rf canvas && rm -rf ws-backend && rm -rf ws-relayer && git clone https://github.com/bandhan-majumder/canvas && cd canvas && cp -r apps/ws-backend ../ && cp -r apps/ws-relayer ../ && cd .. && npm install -g pnpm && pm2 kill && cd ws-relayer && pnpm install && pnpm build && pm2 start pnpm --name "ws-relayer" -- start && cd .. && cd ws-backend && pnpm install && pnpm build && pm2 start pnpm --name "ws-backend" -- start
+          echo 'Updating code'
+          cd Canvas
+          git pull origin main
+
+          echo 'Stopping old containers'
+          sudo docker stop canvas-ws-be || true
+          sudo docker rm canvas-ws-relayer || true
+
+          echo 'Deleting the image'
+          sudo docker rmi canvas-ws-be-img || true
+          sudo docker rmi canvas-ws-relayer-img || true
+
+          echo 'Building image'
+          sudo docker build -t canvas-ws-relayer-img -f apps/ws-relayer/Dockerfile .
+          sudo docker build -t canvas-ws-be-img -f apps/ws-backend/Dockerfile .
+
+          echo 'Running relayer container'
+          sudo docker run -d \
+            --net=host \
+            --name canvas-ws-relayer \
+            --env-file /home/ubuntu/Canvas/.env.server \
+            canvas-ws-relayer-img:latest
+          
+          echo 'Running relayer container'
+          sudo docker run -d \
+            --net=host \
+            --name canvas-ws-be \
+            --env-file /home/ubuntu/Canvas/.env.server \
+            canvas-ws-be-img:latest
         "
