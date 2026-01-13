@@ -25,4 +25,4 @@ COPY --from=installer /app/node_modules ./node_modules
 
 EXPOSE 3002
 
-CMD ["bun", "index.mjs"]
+CMD ["bun", "src/index.ts"]

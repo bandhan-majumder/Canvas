@@ -39,7 +39,7 @@ jobs:
           set -e
 
           echo 'Updating code'
-          cd Canvas
+          cd canvas
           git pull origin main
 
           echo 'Stopping old containers'
@@ -58,13 +58,13 @@ jobs:
           sudo docker run -d \
             --net=host \
             --name canvas-ws-relayer \
-            --env-file /home/ubuntu/Canvas/.env.server \
+            --env-file /home/ubuntu/canvas/.env.server \
             canvas-ws-relayer-img:latest
           
           echo 'Running relayer container'
           sudo docker run -d \
             --net=host \
             --name canvas-ws-be \
-            --env-file /home/ubuntu/Canvas/.env.server \
+            --env-file /home/ubuntu/canvas/.env.server \
             canvas-ws-be-img:latest
         "

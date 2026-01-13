@@ -78,7 +78,7 @@ setInterval(() => {
 }, RATE_LIMIT_WINDOW_MS);
 
 const relayerSocket = new WebSocketType(
-  RELAYER_URL ? RELAYER_URL : "ws://localhost:8080",
+  RELAYER_URL ? RELAYER_URL : "ws://localhost:3002",
 );
 
 relayerSocket.on("open", () => {
