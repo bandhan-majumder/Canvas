@@ -24,6 +24,10 @@
   },
   "dependencies": {
     "@types/node": "^24.9.2",
-    "drizzle-orm": "^0.44.7"
+    "drizzle-orm": "^0.44.7",
+    "next": "^16.1.1",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-hook-form": "^7.71.0"
   }
 }
